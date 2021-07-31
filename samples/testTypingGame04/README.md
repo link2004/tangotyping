@@ -1,4 +1,3 @@
-リトライ機能と問題shuffle機能追加  
-Boostrap使ってみた
+効果音と色
 
-**リンク**https://link2004.github.io/Naritaya_meister/samples/testTypingGame02/
+**リンク**https://link2004.github.io/Naritaya_meister/samples/testTypingGame04/
