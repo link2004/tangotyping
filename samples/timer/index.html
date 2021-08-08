@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="app" class="container text-center mt-5">
+        <div class="title my-4">
+            <h1 >タイピングゲーム</h1>
+            <div class="progress" style="height:2px;"></div>
+        </div>
+        <button v-if="this.scene=='home'" class="btn btn-primary btn-lg" @click="startGame">ゲームスタート</button>
+        <div class="gameScreen card" v-if="this.scene!='home'" :style=cardStyleObj>
+            <div class="card-body">
+                <div class="question">{{ current_question }}</div>
+                <div v-if="this.scene=='result'">
+                    <div style="color:orange;">Clear!</div>
+                    <button @click="scoreTable">リザルト(仮)</button>
+                    <div>
+                        <table border="1">
+                            <tbody>
+                                <tr id="id-japanese">
+                                    <td>問題</td>
+                                </tr>
+                                <tr id="id-english">
+                                    <td>解答</td>
+                                </tr>
+                                <tr id="id-time">
+                                    <td>時間</td>
+                                </tr>
+                                <tr id="id-miss_count">
+                                    <td>ミス</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </table>
+                    <button class="btn btn-link" @click="retry">リトライ(Enter)</button>
+                </div>
+                <div v-if="this.scene=='game'" class="typeFormWrapper">
+                    <div class="typeForm card-header">&nbsp;{{input_string}}&nbsp;</div>
+                </div>
+                <div class="gauge progress mt-4">
+                    <div class="progress-bar" :style="gaugeStyleObj"></div>
+                </div>
+                <div>{{current_count}}/{{this.questions.length}}</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
