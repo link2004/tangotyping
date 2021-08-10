@@ -49,19 +49,15 @@ new Vue({
     miss_flg: "",
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
-    mondai: [
-      //仮
-      new question_C("林檎", "apple"),
-      new question_C("葡萄", "grape"),
-    ],
+    mondai: {
+      "林檎":"apple",
+      "葡萄":"grape",
+      "檸檬":"lemon",
+      "蜜柑":"orange",
+    },
   },
   methods: {
     startGame: function () {
-      // 問題追加(仮)
-      while (this.questions.length < this.mondai.length) {
-        this.questions[this.questions.length] =
-          this.mondai[this.questions.length];
-      }
       // ゲームスタート
       this.questions = this.shuffle(this.questions); //問題をシャッフル
       this.updateQuestion();
@@ -91,8 +87,18 @@ new Vue({
       // 最後の問題なら
       if (this.current_count == this.questions.length) {
         this.scene = "result";
+
+        //この時点ではまだスコアテーブルが表示されていないため，次のフレームに実行
+        Vue.nextTick(()=> {
+
+          this.scoreTable();
+
+        })
+
+      } else {
+        this.updateQuestion();
       }
-      this.updateQuestion();
+      
     },
     retry: function () {
       // リトライ
@@ -118,7 +124,7 @@ new Vue({
     onKeyDown: function (event) {
       //ゲーム画面
       if (this.scene == "game") {
-        //入力するキーが合っているか判別
+        //入力したキーがあっているならば
         if (event.key == this.current_answer[this.word_index_counts]) {
           // 画面の色を不正解色から直す
           this.miss_flg = false;
@@ -143,20 +149,35 @@ new Vue({
         this.retry();
       }
     },
+
     scoreTable: function () {
-      for (var i in this.questions[0]) {
-        for (var j in this.questions) {
-          var child = document.createElement("td");
-          child.innerHTML = this.questions[j][i];
-          document.getElementById("id-" + i).appendChild(child);
+      for (var question in this.questions) {
+        //行を生成
+        var tr = document.createElement("tr");
+        document.getElementById("tbody").appendChild(tr);//行をtbodyに追加
+        for (var key in this.questions[0]) {
+          //dataを作成
+          var td = document.createElement("td");
+          var data = this.questions[question][key];
+          td.innerHTML = data;
+          tr.appendChild(td);
         }
       }
     },
   },
+
+  //htmlページを開いた直後
   mounted: function () {
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
+
+    // 問題追加(仮)
+    for (var jp in this.mondai){
+      var en = this.mondai[jp]
+      this.questions.push(new question_C(jp,en))
+    }
   },
+
   computed: {
     gaugeStyleObj: function () {
       //ゲージの長さを制御
@@ -172,6 +193,7 @@ new Vue({
       };
     },
     cardStyleObj: function () {
+      //ミスしたときのカードの色を制御
       if (this.miss_flg) col = "#ffdab9";
       else col = "#ffffff";
       return {
