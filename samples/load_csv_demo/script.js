@@ -198,7 +198,7 @@ new Vue({
           var jp = data[0];
           var en = data[1];
           console.log(jp,en);
-          this.questions.push(new question_C(jp,en));
+          this.$data.questions.push(new question_C(jp,en));
         }
       }   
     },
