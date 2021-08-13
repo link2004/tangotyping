@@ -190,12 +190,14 @@ new Vue({
       // レスポンスが返ってきたら
       request.onload = function(){
         var str = request.responseText
+        console.log(str);
         // 問題追加
         var tmp = str.split("/n")
         for(var i=0;i<tmp.length;++i){
           var data = tmp[i].split(',');
           var jp = data[0];
           var en = data[1];
+          console.log(jp,en);
           this.questions.push(new question_C(jp,en));
         }
       }   
