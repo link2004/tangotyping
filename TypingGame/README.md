@@ -1,3 +1,3 @@
 効果音と色
 
-**リンク**https://link2004.github.io/Naritaya_meister/samples/timer/
+**リンク**https://link2004.github.io/Naritaya_meister/TypingGame/
