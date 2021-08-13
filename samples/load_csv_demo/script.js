@@ -189,8 +189,16 @@ new Vue({
 
       // レスポンスが返ってきたら
       request.onload = function(){
-        console.log(request.responseText);
-      }
+        var str = request.responseText
+        // 問題追加
+        var tmp = str.split("/n")
+        for(var i=0;i<tmp.length;++i){
+          var data = tmp[i].split(',');
+          var jp = data[0];
+          var en = data[1];
+          this.questions.push(new question_C(jp,en));
+        }
+      }   
     },
   },
 
@@ -200,10 +208,10 @@ new Vue({
     document.addEventListener("keydown", this.onKeyDown);
 
     // 問題追加(仮)
-    for (var jp in this.mondai){
-      var en = this.mondai[jp];
-      this.questions.push(new question_C(jp,en));
-    }
+    // for (var jp in this.mondai){
+    //   var en = this.mondai[jp];
+    //   this.questions.push(new question_C(jp,en));
+    // }
 
     this.getCSV();
   },
