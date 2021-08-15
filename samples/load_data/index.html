@@ -16,7 +16,7 @@
             <div class="progress" style="height:2px;"></div>
         </div>
         <div v-if="this.scene=='home'">
-            <input type="file" @change="loadCsvFile" accept=".csv">
+            <input id="input_file" type="file" @change="loadCsvFile" accept=".csv">
             <button class="btn btn-primary btn-lg" @click="startGame">ゲームスタート</button>
         </div>
         
