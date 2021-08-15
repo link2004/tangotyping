@@ -45,6 +45,7 @@ new Vue({
     current_answer: "",
     current_count: 0,
     questions: [],
+    all_questions_data: [],
     input_string: "",
     hint_string: "",//透明度によって表示切替
     word_index_counts: 0,
@@ -54,6 +55,9 @@ new Vue({
   methods: {
     startGame: function () {
       // ゲームスタート
+      //もし問題がなくなったら初めからにする
+      if (this.questions.length == 0)this.questions = this.all_questions_data;
+
       this.questions = this.shuffle(this.questions); //問題をシャッフル
       this.updateQuestion();
       // this.startFlg = true
@@ -98,6 +102,13 @@ new Vue({
       // リトライ
       this.current_count = 0;
       this.scene = "game";
+
+      //missが0の問題を消す
+      this.questions = this.questions.filter((quesiton) => {
+        return quesiton.miss_count > 0
+      });
+      console.log(this.questions);
+
       this.startGame();
     },
     panelBlick: function(){
@@ -187,9 +198,10 @@ new Vue({
           jp = data.split(",")[0];
           en = data.split(",")[1];
           console.log(typeof en)
-          this.questions.push(new question_C(jp,en));
+          this.all_questions_data.push(new question_C(jp,en));
         }
       }
+      this.questions = this.all_questions_data;
     }
   },
 
