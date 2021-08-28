@@ -25,8 +25,9 @@
             <tbody id="tbody">
             </tbody>
         </table>
-        <button class="btn btn-primary btn-lg" @click="AddLine">行追加</button>
+        <button class="btn btn-primary" @click="AddLine">行追加</button>
         <a id="download" href="#" download="data.csv"  @click="DownloadData">csvファイルダウンロード</a>
+        <p>※未入力を含む行は保存時に自動的に削除されます</p>
     </div>
     <script src="script.js"></script>
 </body>
