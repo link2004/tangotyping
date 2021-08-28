@@ -196,8 +196,8 @@ new Vue({
         console.log(lines)
         for (let i=0; i < lines.length; i++){
           data = lines[i].split(",");
-          jp = data[0];
-          en = data[1];
+          jp = data[0].replace('\r','');
+          en = data[1].replace('\r','');
           console.log(typeof en)
           this.all_questions_data.push(new question_C(jp,en));
         }
