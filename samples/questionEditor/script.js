@@ -10,8 +10,8 @@ new Vue({
             this.question_num += 1;
             tr.innerHTML = 
                     `<th scope="row">`+String(this.question_num)+`</th>
-                    <td id="td"><input type="text" style="border: none; width: 100%;"></td>
-                    <td id="td"><input type="text" style="border: none; width: 100%;"></td>`;
+                    <td id="td"><input type="text" style="border: none; width:" 100%; onfocus="this.select();"></td>
+                    <td id="td"><input type="text" style="border: none; width:" 100%;" onfocus="this.select();"></td>`;
         },
         DownloadData() {
             //テーブルをcsv変換
@@ -97,7 +97,7 @@ new Vue({
                 }
                     
             }
-        }
+        },
     },
     mounted: function(){
         //キーが押されたときのイベントを使えるようにする
@@ -105,3 +105,9 @@ new Vue({
         this.AddLine();//一行目追加
     }
 })
+
+
+//更新時にアラート
+window.addEventListener('beforeunload', function(e) {
+    e.returnValue = '行った変更が保存されない可能性があります。';
+}, false);
