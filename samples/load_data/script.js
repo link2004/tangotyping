@@ -241,3 +241,8 @@ new Vue({
     }
   },
 });
+
+//更新時にアラート
+window.addEventListener('beforeunload', function(e) {
+  e.returnValue = '行った変更が保存されない可能性があります。';
+}, false);
