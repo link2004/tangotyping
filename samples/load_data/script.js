@@ -191,12 +191,13 @@ new Vue({
       let reader = new FileReader();
       reader.readAsText(file);
       reader.onload = () => {
-        let lines = reader.result.split("\r\n");
+        let lines = reader.result.split("\n");
+        lines.pop();
         console.log(lines)
         for (let i=0; i < lines.length; i++){
-          data = lines[i]
-          jp = data.split(",")[0];
-          en = data.split(",")[1];
+          data = lines[i].split(",");
+          jp = data[0];
+          en = data[1];
           console.log(typeof en)
           this.all_questions_data.push(new question_C(jp,en));
         }
