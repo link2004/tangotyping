@@ -10,8 +10,8 @@ new Vue({
             this.question_num += 1;
             tr.innerHTML = 
                     `<th scope="row">`+String(this.question_num)+`</th>
-                    <td id="td"><input type="text" style="border: none; width:" 100%; onfocus="this.select();"></td>
-                    <td id="td"><input type="text" style="border: none; width:" 100%;" onfocus="this.select();"></td>`;
+                    <td id="td"><input type="text" style="border: none; width:100%;" onfocus="this.select();"></td>
+                    <td id="td"><input type="text" style="border: none; width:100%;" onfocus="this.select();"></td>`;
         },
         DownloadData() {
             //テーブルをcsv変換
@@ -92,7 +92,11 @@ new Vue({
 
                 if (next_cell != null){
                     if (next_cell.children[0] != null){
-                        next_cell.children[0].focus();
+                        Vue.nextTick(()=> {
+                            console.log("nextTick")
+                            next_cell.children[0].select();
+                          })
+                        console.log("test")
                     }
                 }
                     
