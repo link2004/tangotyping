@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>問題作成</title>
+</head>
+<body>
+    <div class="container" id="app">
+        <p>移動：矢印キー、Tab、Enter　行追加：最下行でEnter
+        </p>
+        <table class="table table-bordered" id="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>問題(日本語)</th>
+                    <th>答え(英語)</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+        <button class="btn btn-primary btn-lg" @click="AddLine">行追加</button>
+        <a id="download" href="#" download="data.csv"  @click="DownloadData">csvファイルダウンロード</a>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
