@@ -51,6 +51,7 @@ new Vue({
     word_index_counts: 0,
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
+    hintMode: false,
   },
   methods: {
     startGame: function () {
@@ -228,7 +229,7 @@ new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
-      if (this.miss_count > 0){
+      if (this.miss_count > 0　|| this.hintMode){
         //表示
         opacity = 1;
         transition = "0.5s"
