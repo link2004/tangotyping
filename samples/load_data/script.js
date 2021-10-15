@@ -51,6 +51,7 @@ new Vue({
     word_index_counts: 0,
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
+    hintMode: false,
   },
   methods: {
     startGame: function () {
@@ -191,12 +192,13 @@ new Vue({
       let reader = new FileReader();
       reader.readAsText(file);
       reader.onload = () => {
-        let lines = reader.result.split("\r\n");
+        let lines = reader.result.split("\n");
+        lines.pop();
         console.log(lines)
         for (let i=0; i < lines.length; i++){
-          data = lines[i]
-          jp = data.split(",")[0];
-          en = data.split(",")[1];
+          data = lines[i].split(",");
+          jp = data[0].replace('\r','');
+          en = data[1].replace('\r','');
           console.log(typeof en)
           this.all_questions_data.push(new question_C(jp,en));
         }
@@ -227,7 +229,7 @@ new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
-      if (this.miss_count > 0){
+      if (this.miss_count > 0　|| this.hintMode){
         //表示
         opacity = 1;
         transition = "0.5s"
@@ -240,3 +242,8 @@ new Vue({
     }
   },
 });
+
+//更新時にアラート
+window.addEventListener('beforeunload', function(e) {
+  e.returnValue = '行った変更が保存されない可能性があります。';
+}, false);

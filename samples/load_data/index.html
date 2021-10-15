@@ -17,7 +17,15 @@
         </div>
         <div v-if="this.scene=='home'">
             <input id="input_file" type="file" @change="loadCsvFile" accept=".csv">
+            <div style="font-size:20px">
+                <p>ファイルをドラッグアンドドロップ</p>
+                <p>
+                    答えを常に表示
+                    <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">
+                </p>
+            </div>
             <button class="btn btn-primary btn-lg" @click="startGame">ゲームスタート</button>
+            
         </div>
         
         <div id="gameScreen" class="gameScreen card" v-if="this.scene!='home'">
