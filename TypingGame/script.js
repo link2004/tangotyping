@@ -1,3 +1,4 @@
+
 class question_C {
   constructor(japanese, english) {
     this.japanese = japanese;
@@ -44,21 +45,20 @@ new Vue({
     current_answer: "",
     current_count: 0,
     questions: [],
+    all_questions_data: [],
     input_string: "",
     hint_string: "",//透明度によって表示切替
     word_index_counts: 0,
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
-    mondai: {
-      "林檎":"apple",
-      "葡萄":"grape",
-      "檸檬":"lemon",
-      "蜜柑":"orange",
-    },
+    hintMode: false,
   },
   methods: {
     startGame: function () {
       // ゲームスタート
+      //もし問題がなくなったら初めからにする
+      if (this.questions.length == 0)this.questions = this.all_questions_data;
+
       this.questions = this.shuffle(this.questions); //問題をシャッフル
       this.updateQuestion();
       // this.startFlg = true
@@ -103,6 +103,13 @@ new Vue({
       // リトライ
       this.current_count = 0;
       this.scene = "game";
+
+      //missが0の問題を消す
+      this.questions = this.questions.filter((quesiton) => {
+        return quesiton.miss_count > 0
+      });
+      console.log(this.questions);
+
       this.startGame();
     },
     panelBlick: function(){
@@ -178,21 +185,32 @@ new Vue({
         {
           tr.classList.add('table-success');
         }
-
       }
     },
+    loadCsvFile: function(e) {
+      let file = e.target.files[0];
+      let reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = () => {
+        let lines = reader.result.split("\n");
+        lines.pop();
+        console.log(lines)
+        for (let i=0; i < lines.length; i++){
+          data = lines[i].split(",");
+          jp = data[0].replace('\r','');
+          en = data[1].replace('\r','');
+          console.log(typeof en)
+          this.all_questions_data.push(new question_C(jp,en));
+        }
+      }
+      this.questions = this.all_questions_data;
+    }
   },
 
   //htmlページを開いた直後
   mounted: function () {
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
-
-    // 問題追加(仮)
-    for (var jp in this.mondai){
-      var en = this.mondai[jp]
-      this.questions.push(new question_C(jp,en))
-    }
   },
 
   computed: {
@@ -211,7 +229,7 @@ new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
-      if (this.miss_count > 0){
+      if (this.miss_count > 0　|| this.hintMode){
         //表示
         opacity = 1;
         transition = "0.5s"
@@ -224,3 +242,8 @@ new Vue({
     }
   },
 });
+
+//更新時にアラート
+window.addEventListener('beforeunload', function(e) {
+  e.returnValue = '行った変更が保存されない可能性があります。';
+}, false);
