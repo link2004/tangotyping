@@ -1,3 +1,5 @@
+import api from "./api.js";
+
 
 class question_C {
   constructor(japanese, english) {
@@ -33,7 +35,8 @@ class timer_C {
     }
   }
 }
-new Vue({
+
+var vue  = new Vue({
   el: "#app",
   data: {
     audio: {
@@ -187,35 +190,48 @@ new Vue({
         }
       }
     },
+    LoadQuestions: function(file){
+      for (let i=0; i < file.length; i++){
+        let jp = file[i][0];
+        let en = file[i][1];
+        this.all_questions_data.push(new question_C(jp,en));
+      }
+      this.questions = this.all_questions_data;
+    },
     loadCsvFile: function(e) {
+      let loadedFile = [];
       let file = e.target.files[0];
       let reader = new FileReader();
       reader.readAsText(file);
-      reader.onload = () => {
-        let lines = reader.result.split("\n");
+      reader.onload = function(e) {
+        let lines = e.target.result.split("\n");
         lines.pop();
-        console.log(lines)
         for (let i=0; i < lines.length; i++){
-          data = lines[i].split(",");
-          jp = data[0].replace('\r','');
-          en = data[1].replace('\r','');
-          console.log(typeof en)
-          this.all_questions_data.push(new question_C(jp,en));
-        }
+          let data = lines[i].split(",");
+          let jp = data[0].replace('\r','');
+          let en = data[1].replace('\r','');
+          loadedFile[i] = [jp,en];
+        } 
+        vue.LoadQuestions(loadedFile);
       }
-      this.questions = this.all_questions_data;
-    }
+    },
   },
 
   //htmlページを開いた直後
   mounted: function () {
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
+
+    var q = api.getQuestions();
+    console.log("load success!:",q);
+    console.log("length:",q.length);
+    this.LoadQuestions(q);
   },
 
   computed: {
     q_gaugeStyleObj: function () {
       //ゲージの長さを制御
+      let width,col;
       width = (this.current_count / this.questions.length) * 100 + "%";
       if (this.current_count == this.questions.length) {
         col = "orange";
@@ -229,6 +245,7 @@ new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
+      let opacity,transition;
       if (this.miss_count > 0　|| this.hintMode){
         //表示
         opacity = 1;
