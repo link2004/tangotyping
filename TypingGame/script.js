@@ -57,7 +57,7 @@ new Vue({
     startGame: function () {
       // ゲームスタート
       //もし問題がなくなったら初めからにする
-      if (this.questions.length == 0)this.questions = this.all_questions_data;
+      if (this.questions.length == 0) this.questions = this.all_questions_data;
 
       this.questions = this.shuffle(this.questions); //問題をシャッフル
       this.updateQuestion();
@@ -90,14 +90,14 @@ new Vue({
         this.scene = "result";
 
         //次のフレームでスコアテーブルを表示
-        Vue.nextTick(()=> {
+        Vue.nextTick(() => {
           this.scoreTable();
         })
 
       } else {
         this.updateQuestion();
       }
-      
+
     },
     retry: function () {
       // リトライ
@@ -112,9 +112,9 @@ new Vue({
 
       this.startGame();
     },
-    panelBlick: function(){
+    panelBlick: function () {
       //ミスしたときに背景を一瞬赤くする
-      document.getElementById("gameScreen").style.background =  "#ffdab9";//画面を赤く
+      document.getElementById("gameScreen").style.background = "#ffdab9";//画面を赤く
       setTimeout(() => {
         document.getElementById("gameScreen").style.background = "#ffffff";//100ms後元に戻す
       }, 100)
@@ -134,7 +134,7 @@ new Vue({
       sound.currentTime = 0; //連続して音を鳴らせるようにする
       sound.play(); //再生
     },
-    
+
     onKeyDown: function (event) {
       //ゲーム画面
       if (this.scene == "game") {
@@ -174,20 +174,18 @@ new Vue({
           var data = this.questions[question][key];
           td.innerHTML = data;
           tr.appendChild(td);
-          
+
         }
         //スコアテーブルの背景色を設定
-        if (this.questions[question]['miss_count'] > 0) 
-        {
+        if (this.questions[question]['miss_count'] > 0) {
           tr.classList.add('table-danger');
         }
-        else 
-        {
+        else {
           tr.classList.add('table-success');
         }
       }
     },
-    loadCsvFile: function(e) {
+    loadCsvFile: function (e) {
       let file = e.target.files[0];
       let reader = new FileReader();
       reader.readAsText(file);
@@ -195,15 +193,19 @@ new Vue({
         let lines = reader.result.split("\n");
         lines.pop();
         console.log(lines)
-        for (let i=0; i < lines.length; i++){
+        for (let i = 0; i < lines.length; i++) {
           data = lines[i].split(",");
-          jp = data[0].replace('\r','');
-          en = data[1].replace('\r','');
+          jp = data[0].replace('\r', '');
+          en = data[1].replace('\r', '');
           console.log(typeof en)
-          this.all_questions_data.push(new question_C(jp,en));
+          this.all_questions_data.push(new question_C(jp, en));
         }
       }
       this.questions = this.all_questions_data;
+    },
+    showKeyboard: function () {
+      console.log("Focus on [hidden_for_keyboard]");
+      document.getElementById('hidden_for_keyboard').focus();
     }
   },
 
@@ -227,9 +229,9 @@ new Vue({
         "background-color": col,
       };
     },
-    hintStrStyleObj: function() {
+    hintStrStyleObj: function () {
       //ヒントの文字列を表示切替
-      if (this.miss_count > 0　|| this.hintMode){
+      if (this.miss_count > 0 || this.hintMode) {
         //表示
         opacity = 1;
         transition = "0.5s"
@@ -238,12 +240,12 @@ new Vue({
         opacity = 0;
         transition = "0s"
       }
-      return {"opacity": opacity, "transition": transition}
+      return { "opacity": opacity, "transition": transition }
     }
   },
 });
 
 //更新時にアラート
-window.addEventListener('beforeunload', function(e) {
+window.addEventListener('beforeunload', function (e) {
   e.returnValue = '行った変更が保存されない可能性があります。';
 }, false);
