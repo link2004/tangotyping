@@ -2,11 +2,12 @@ var questions
 
 function getQuestions(){
     var userID = "riku0720"
-    var title = "testData"
+    var title = "Fruit"
     var xmlHttpRequest = new XMLHttpRequest();
     xmlHttpRequest.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
             var item = JSON.parse(this.responseText);
+            console.log(item);
             questions = item.questions;
         }
     }
