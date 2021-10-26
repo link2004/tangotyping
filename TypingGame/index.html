@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>[v-cloak] {display:none;}</style>
     <title>Document</title>
 </head>
 <body style="font-size:36px">
@@ -25,9 +26,9 @@
             
         </div>
         
-        <div id="gameScreen" class="gameScreen card" v-if="this.scene!='home'">
+        <div id="gameScreen" class="gameScreen card" v-if="this.scene!='home'" v-cloak>
             <div class="card-body">
-                <div v-if="this.scene=='game'" class="typeFormWrapper">
+                <div v-if="this.scene=='game'" class="typeFormWrapper" v-cloak>
                     <div class="question">{{ current_question }}</div>
                     <div class="card-header border-0">
                         <span>{{input_string}}</span><span style="color:gray" :style="hintStrStyleObj">{{hint_string}}</span>
@@ -40,7 +41,7 @@
                 </div>
                     
 
-                <div v-if="this.scene=='result'">
+                <div v-if="this.scene=='result'" v-cloak>
                     <div style="color:orange;">Clear!</div>
                     <button class="btn btn-link" @click="retry">リトライ(Enter)</button>
                     <div>
