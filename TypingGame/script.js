@@ -139,13 +139,15 @@ new Vue({
       //ゲーム画面
       if (this.scene == "game") {
         //入力したキーがあっているならば
-        if (event.key == this.current_answer[this.word_index_counts]) {
-
+        if (this.current_answer[this.word_index_counts] == event.key) {
           this.playSound(this.audio.type); //タイプ音
-          this.input_string += event.key;
-          this.hint_string = this.hint_string.slice(1);//先頭文字を削除
-          this.word_index_counts++;
-
+          var key = event.key;
+          do{
+            this.input_string += key;
+            this.hint_string = this.hint_string.slice(1);//先頭文字を削除
+            this.word_index_counts++;
+            key = " ";
+          }while (this.current_answer[this.word_index_counts] == " ")
           //もし単語を入力し終わったら
           if (this.word_index_counts == this.current_answer.length) {
             this.nextQuestion(); //次の問題へ
