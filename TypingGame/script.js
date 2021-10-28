@@ -71,7 +71,7 @@ var vue  = new Vue({
       this.current_count = 0;
       this.scene = "game";
 
-      this.selectQuestion();
+      this.selectQuestions();
 
       //もし問題がなくなったら初めからにする
       if (this.questions.length == 0) this.initQuestions();
@@ -128,6 +128,7 @@ var vue  = new Vue({
       //すべての問題を初期化
       this.questions.forEach(question => {
         question.init();
+        console.log("init questions")
       });
 
       this.questions = this.all_questions_data;
@@ -149,19 +150,17 @@ var vue  = new Vue({
       }
       return array;
     },
-    selectQuestion: function(){
-      if (this.RetryOption_miss){
-        //missがｎ以上の問題
-        this.questions = this.questions.filter((quesiton) => {
-          return quesiton.miss_count >= this.RetryOption_miss_num
-        });
+
+    selectQuestions: function(){
+      var selectedQuestions = [];
+      for (var question in this.questions){
+        var state1 = this.RetryOption_miss && this.questions[question]['miss_count'] >= this.RetryOption_miss_num;
+        var state2 = this.RetryOption_anki && !this.questions[question]['isCorrect'];
+        if (state1 || state2) {
+          selectedQuestions.push(this.questions[question]);
+        }
       }
-      if (this.RetryOption_anki){
-        //isCorrectがfalseの問題
-        this.questions = this.questions.filter((quesiton) => {
-          return !quesiton.isCorrect
-        });
-      }
+      this.questions = selectedQuestions;
     },
     playSound: function (sound) {
       //音声再生
