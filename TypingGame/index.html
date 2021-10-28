@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/jpncss@latest/dist/bootstrap/jpn.min.css">
     <link rel="shortcut icon" href="#">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <style>[v-cloak] {display:none;}</style>
@@ -13,11 +14,11 @@
 <body style="font-size:36px">
     <div id="app" class="container text-center mt-5" style="max-width:800px">
         <div class="title my-4">
-            <h1 >タイピングゲーム</h1>
+            <h1 >Tango Typing</h1>
             <div class="progress" style="height:2px;"></div>
         </div>
         <div v-if="this.scene=='home'">
-            <input id="input_file" type="file" @change="loadCsvFile" accept=".csv">
+            <input id="input_file" type="file" @change="loadCsvFile" accept=".csv" style="font-size: 20px;">
             <div style="font-size:20px">
                 答えを常に表示
                 <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">
