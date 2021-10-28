@@ -16,15 +16,16 @@
             <h1 >Tango Typing</h1>
             <div class="progress" style="height:2px;"></div>
         </div>
-        <div v-if="this.scene=='home'">
-            <button class="btn btn-primary btn-lg" @click="startGame" style="margin-bottom: 20px;">ゲームスタート(Enter)</button>
-            <div class="card">
+        <div v-if="this.scene=='home'" v-cloak>
+            <div class="card" style="margin:20px;">
+                <div class="card-header">{{questions_title}}</div>
                 <div class="card-body" style="font-size:20px;  text-align:left;">
                     <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">答えを常に表示<br>
                     <input v-model="csvMode" type="checkbox" style="width: 20px; height: 20px;">テキストデータを読み込む<br>
                     <input v-if="csvMode" id="input_file" type="file" @change="loadCsvFile" accept=".csv" v-cloak>
                 </div>
             </div>
+            <button class="btn btn-primary btn-lg" @click="startGame" style="margin-bottom: 20px;">ゲームスタート(Enter)</button>
         </div>
         
         <div id="gameScreen" class="gameScreen card" v-if="this.scene!='home'" v-cloak>
@@ -46,21 +47,28 @@
                     <div style="color:orange;">Clear!</div>
                     <button class="btn btn-primary" @click="startGame">リトライ(Enter)</button>
                     <button class="btn btn-secondary" @click="returnHome">戻る(Esc)</button>
-                    <div style="padding:20px;">
-                        <table class="table table-bordered table-sm" style="font-size:28px">
-                            <thead>
-                                <tr>
-                                    <th scope="col">問題</th>
-                                    <th scope="col">解答</th>
-                                    <th scope="col">時間</th>
-                                    <th scope="col">ミス</th>
-                                    <th scope="col">暗記</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody">
-                            </tbody>
-                        </table>
+                    <div class="card" style="font-size: 20px; text-align: left;">
+                        <div class="card-header">リトライ設定</div>
+                        <div class="card-body">
+                            <input v-model="RetryOption_miss" type="checkbox" style="width: 20px; height: 20px;">ミス数が <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="0"> 以上の問題<br>
+                            <input v-model="RetryOption_anki" type="checkbox" style="width: 20px; height: 20px;">暗記していない問題<br>
+                            <button class="btn btn-primary" @click="MakeScoreTable">更新</button>
+                        </div>
                     </div>
+                    <table class="table table-bordered table-sm" style="font-size:28px">
+                        <thead>
+                            <tr class="table-light">
+                                <th scope="col">問題</th>
+                                <th scope="col">解答</th>
+                                <th scope="col">時間</th>
+                                <th scope="col">ミス</th>
+                                <th scope="col">暗記</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>  
+                    
                     
                 </div>
             </div>
