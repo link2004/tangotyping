@@ -48,6 +48,7 @@
                     <div style="color:orange;">Clear!</div>
                     <button class="btn btn-primary" @click="startGame">リトライ(Enter)</button>
                     <button class="btn btn-secondary" @click="returnHome">戻る(Esc)</button>
+                    <p><input v-model="hintMode" type="checkbox">答えを常に表示</p>
                     <div class="card option">
                         <div class="card-header">リトライ設定</div>
                         <div class="card-body">
