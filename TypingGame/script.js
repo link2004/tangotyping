@@ -52,6 +52,7 @@ new Vue({
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
     hintMode: false,
+    csvMode: false,
   },
   methods: {
     startGame: function () {

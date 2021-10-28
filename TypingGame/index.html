@@ -18,13 +18,14 @@
             <div class="progress" style="height:2px;"></div>
         </div>
         <div v-if="this.scene=='home'">
-            <input id="input_file" type="file" @change="loadCsvFile" accept=".csv" style="font-size: 20px;">
-            <div style="font-size:20px">
-                答えを常に表示
-                <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">
+            <button class="btn btn-primary btn-lg" @click="startGame" style="margin-bottom: 20px;">ゲームスタート</button>
+            <div class="card">
+                <div class="card-body" style="font-size:20px;  text-align:left;">
+                    <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">答えを常に表示<br>
+                    <input v-model="csvMode" type="checkbox" style="width: 20px; height: 20px;">テキストデータを読み込む<br>
+                    <input v-if="csvMode" id="input_file" type="file" @change="loadCsvFile" accept=".csv">
+                </div>
             </div>
-            <button class="btn btn-primary btn-lg" @click="startGame">ゲームスタート</button>
-            
         </div>
         
         <div id="gameScreen" class="gameScreen card" v-if="this.scene!='home'" v-cloak>
