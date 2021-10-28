@@ -261,12 +261,8 @@ var vue  = new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
-<<<<<<< HEAD
-      let opacity,transition;
-      if (this.miss_count > 0　|| this.hintMode){
-=======
+      var opacity,transition;
       if (this.isHint || this.hintMode){
->>>>>>> 938c866c8dc942af674fcf4378ffab85fe75b5f7
         //表示
         opacity = 1;
         transition = "0.2s"
