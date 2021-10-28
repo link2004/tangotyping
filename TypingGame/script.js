@@ -5,11 +5,9 @@ class question_C {
   constructor(japanese, english) {
     this.japanese = japanese;
     this.english = english;
-    this.init();
-  }
-  in(japanese, english) {
-    this.japanese = japanese;
-    this.english = english;
+    this.time = 0;
+    this.miss_count = 0;
+    this.isCorrect = true;
   }
   savePlayData(time, miss_count, isCorrect) {
     this.time = time;
@@ -54,6 +52,7 @@ var vue  = new Vue({
     current_count: 0,
     questions: [],
     all_questions_data: [],
+    questions_title: "test",
     input_string: "",
     hint_string: "",//透明度によって表示切替
     word_index_counts: 0,
@@ -62,6 +61,9 @@ var vue  = new Vue({
     hintMode: false,
     csvMode: false,
     isHint: false,
+    RetryOption_miss: true,
+    RetryOption_anki: true,
+    RetryOption_miss_num: 1,
   },
   methods: {
     startGame: function () {
@@ -69,10 +71,7 @@ var vue  = new Vue({
       this.current_count = 0;
       this.scene = "game";
 
-      //missが0の問題を消す
-      this.questions = this.questions.filter((quesiton) => {
-        return quesiton.miss_count > 0
-      });
+      this.selectQuestion();
 
       //もし問題がなくなったら初めからにする
       if (this.questions.length == 0) this.initQuestions();
@@ -111,7 +110,7 @@ var vue  = new Vue({
 
         //次のフレームでスコアテーブルを表示
         Vue.nextTick(()=> {
-          this.scoreTable();
+          this.MakeScoreTable();
         })
 
       } else {
@@ -150,6 +149,20 @@ var vue  = new Vue({
       }
       return array;
     },
+    selectQuestion: function(){
+      if (this.RetryOption_miss){
+        //missがｎ以上の問題
+        this.questions = this.questions.filter((quesiton) => {
+          return quesiton.miss_count >= this.RetryOption_miss_num
+        });
+      }
+      if (this.RetryOption_anki){
+        //isCorrectがfalseの問題
+        this.questions = this.questions.filter((quesiton) => {
+          return !quesiton.isCorrect
+        });
+      }
+    },
     playSound: function (sound) {
       //音声再生
       sound.currentTime = 0; //連続して音を鳴らせるようにする
@@ -157,14 +170,14 @@ var vue  = new Vue({
     },
     
     onKeyDown: function (event) {
-      //ゲーム画面
+      if (event.key == "Escape")this.returnHome();
       if (this.scene == "game") {
         //スペースキーが押されたら答え表示
         if (event.key == " "){
           this.isHint = true;
-        }else{
-          //入力したキーがあっているならば
+        }else if (event.key != "Shift"){
           if (this.current_answer[this.word_index_counts] == event.key) {
+            //入力したキーがあっているならば
             this.playSound(this.audio.type); //タイプ音
             var key = event.key;
             do{
@@ -173,30 +186,34 @@ var vue  = new Vue({
               this.word_index_counts++;
               key = " ";
             }while (this.current_answer[this.word_index_counts] == " ")
+
             //もし単語を入力し終わったら
             if (this.word_index_counts == this.current_answer.length) {
               this.nextQuestion(); //次の問題へ
             }
+
           } else {
+            //間違えたなら
             this.miss_count++;
             this.playSound(this.audio.miss); //ミス音
             this.panelBlick();
           }
         }
+        
       }
       else if (event.key == "Enter") {
         this.startGame();
       }
-      else if (event.key == "Escape") {
-        this.returnHome();
-      }
     },
 
-    scoreTable: function () {
+    MakeScoreTable: function () {
+      var tbody = document.getElementById("tbody");
+      //tbodyを空にする
+      tbody.innerHTML = "";
       for (var question in this.questions) {
         //行を生成
         var tr = document.createElement("tr");
-        document.getElementById("tbody").appendChild(tr);//行をtbodyに追加
+        tbody.appendChild(tr);//行をtbodyに追加
         for (var key in this.questions[0]) {
           //dataを作成
           var td = document.createElement("td");
@@ -211,13 +228,15 @@ var vue  = new Vue({
           
         }
         //スコアテーブルの背景色を設定
-        if (this.questions[question]['isCorrect']) 
+        var state1 = this.RetryOption_miss && this.questions[question]['miss_count'] >= this.RetryOption_miss_num;
+        var state2 = this.RetryOption_anki && !this.questions[question]['isCorrect'];
+        if (state1 || state2) 
         {
-          tr.classList.add('table-success');
+          tr.classList.add('table-danger');
         }
         else 
         {
-          tr.classList.add('table-danger');
+          tr.classList.add('table-success');
         }
       }
     },
@@ -253,11 +272,10 @@ var vue  = new Vue({
   mounted: function () {
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
+    //問題をサーバーからGET
+    this.LoadQuestions(api.getQuestions());
 
-    var q = api.getQuestions();
-    console.log("load success!:",q);
-    console.log("length:",q.length);
-    this.LoadQuestions(q);
+    this.questions_title = api.getParam('title');
   },
 
   computed: {
@@ -288,7 +306,7 @@ var vue  = new Vue({
         transition = "0s"
       }
       return {"opacity": opacity, "transition": transition}
-    }
+    },
   },
 });
 

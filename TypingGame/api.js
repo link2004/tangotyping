@@ -1,6 +1,5 @@
-var questions
-
 function getQuestions(){
+    var questions
     console.log("title:",getParam('title'))
     var userID = "riku0720"
     var title = "Fruit"
@@ -38,4 +37,5 @@ function getParam(name, url) {
 
 export default {
     getQuestions,
+    getParam
 }
