@@ -5,9 +5,7 @@ class question_C {
   constructor(japanese, english) {
     this.japanese = japanese;
     this.english = english;
-    this.time = 0;
-    this.miss_count = 0;
-    this.isCorrect = true;
+    this.init();
   }
   in(japanese, english) {
     this.japanese = japanese;
@@ -17,6 +15,11 @@ class question_C {
     this.time = time;
     this.miss_count = miss_count;
     this.isCorrect = isCorrect;
+  }
+  init() {
+    this.time = 0;
+    this.miss_count = 0;
+    this.isCorrect = true;
   }
 }
 class timer_C {
@@ -63,8 +66,16 @@ var vue  = new Vue({
   methods: {
     startGame: function () {
       // ゲームスタート
+      this.current_count = 0;
+      this.scene = "game";
+
+      //missが0の問題を消す
+      this.questions = this.questions.filter((quesiton) => {
+        return quesiton.miss_count > 0
+      });
+
       //もし問題がなくなったら初めからにする
-      if (this.questions.length == 0)this.questions = this.all_questions_data;
+      if (this.questions.length == 0) this.initQuestions();
 
       this.questions = this.shuffle(this.questions); //問題をシャッフル
       this.updateQuestion();
@@ -108,18 +119,19 @@ var vue  = new Vue({
       }
       
     },
-    retry: function () {
-      // リトライ
-      this.current_count = 0;
-      this.scene = "game";
+    returnHome: function(){
+      this.initQuestions();
+      this.scene = "home";
+    },
+    initQuestions: function(){
+      //問題をはじめからにする
 
-      //missが0の問題を消す
-      this.questions = this.questions.filter((quesiton) => {
-        return quesiton.miss_count > 0
+      //すべての問題を初期化
+      this.questions.forEach(question => {
+        question.init();
       });
-      console.log(this.questions);
 
-      this.startGame();
+      this.questions = this.all_questions_data;
     },
     panelBlick: function(){
       //ミスしたときに背景を一瞬赤くする
@@ -172,10 +184,11 @@ var vue  = new Vue({
           }
         }
       }
-
-      //リザルト画面のとき，Enterでリトライ
-      if ((this.scene == "result") & (event.key == "Enter")) {
-        this.retry();
+      else if (event.key == "Enter") {
+        this.startGame();
+      }
+      else if (event.key == "Escape") {
+        this.returnHome();
       }
     },
 
@@ -189,8 +202,9 @@ var vue  = new Vue({
           var td = document.createElement("td");
           var data = this.questions[question][key];
 
-          //data true/falseを◯/×に変換
-          if (typeof(data) == "boolean")data = data? "◯" : "×";
+          //isCorrect true/falseを◯/×に変換
+          if (key == "isCorrect")data = data? "◯" : "×";
+          else if (key == "time")data = data.toFixed(2);
 
           td.innerHTML = data;
           tr.appendChild(td);
@@ -208,17 +222,18 @@ var vue  = new Vue({
       }
     },
     LoadQuestions: function(file){
+      this.all_questions_data = [];
       for (let i=0; i < file.length; i++){
         let jp = file[i][0];
         let en = file[i][1];
         this.all_questions_data.push(new question_C(jp,en));
       }
-      this.questions = this.all_questions_data;
     },
     loadCsvFile: function(e) {
       let loadedFile = [];
       let file = e.target.files[0];
       let reader = new FileReader();
+      this.questions = [];//現在の途中の問題を空にする
       reader.readAsText(file);
       reader.onload = function(e) {
         let lines = e.target.result.split("\n");
