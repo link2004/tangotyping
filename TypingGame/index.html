@@ -23,7 +23,7 @@
                 <div class="card-body" style="font-size:20px;  text-align:left;">
                     <input v-model="hintMode" type="checkbox" style="width: 20px; height: 20px;">答えを常に表示<br>
                     <input v-model="csvMode" type="checkbox" style="width: 20px; height: 20px;">テキストデータを読み込む<br>
-                    <input v-if="csvMode" id="input_file" type="file" @change="loadCsvFile" accept=".csv">
+                    <input v-if="csvMode" id="input_file" type="file" @change="loadCsvFile" accept=".csv" v-cloak>
                 </div>
             </div>
         </div>
