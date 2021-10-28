@@ -5,14 +5,16 @@ class question_C {
     this.english = english;
     this.time = 0;
     this.miss_count = 0;
+    this.isCorrect = true;
   }
   in(japanese, english) {
     this.japanese = japanese;
     this.english = english;
   }
-  savePlayData(time, miss_count) {
+  savePlayData(time, miss_count, isCorrect) {
     this.time = time;
     this.miss_count = miss_count;
+    this.isCorrect = isCorrect;
   }
 }
 class timer_C {
@@ -52,7 +54,11 @@ new Vue({
     time: new timer_C(), // タイマー
     miss_count: 0, // ミス数記録
     hintMode: false,
+<<<<<<< HEAD
     csvMode: false,
+=======
+    isHint: false,
+>>>>>>> 9d29ad9062c0b381d7a47ea8f18a86d8c4c58e8f
   },
   methods: {
     startGame: function () {
@@ -75,6 +81,7 @@ new Vue({
       this.hint_string = this.current_answer;
       this.word_index_counts = 0;
       this.miss_count = 0;
+      this.isHint = false;
     },
     nextQuestion: function () {
       // タイマーストップ
@@ -82,7 +89,8 @@ new Vue({
       // 時間とミス数の保存
       this.questions[this.current_count].savePlayData(
         this.time.getTime,
-        this.miss_count
+        this.miss_count,
+        !this.isHint
       );
       // 次の問題に進む
       this.current_count += 1;
@@ -139,24 +147,29 @@ new Vue({
     onKeyDown: function (event) {
       //ゲーム画面
       if (this.scene == "game") {
-        //入力したキーがあっているならば
-        if (this.current_answer[this.word_index_counts] == event.key) {
-          this.playSound(this.audio.type); //タイプ音
-          var key = event.key;
-          do{
-            this.input_string += key;
-            this.hint_string = this.hint_string.slice(1);//先頭文字を削除
-            this.word_index_counts++;
-            key = " ";
-          }while (this.current_answer[this.word_index_counts] == " ")
-          //もし単語を入力し終わったら
-          if (this.word_index_counts == this.current_answer.length) {
-            this.nextQuestion(); //次の問題へ
+        //スペースキーが押されたら答え表示
+        if (event.key == " "){
+          this.isHint = true;
+        }else{
+          //入力したキーがあっているならば
+          if (this.current_answer[this.word_index_counts] == event.key) {
+            this.playSound(this.audio.type); //タイプ音
+            var key = event.key;
+            do{
+              this.input_string += key;
+              this.hint_string = this.hint_string.slice(1);//先頭文字を削除
+              this.word_index_counts++;
+              key = " ";
+            }while (this.current_answer[this.word_index_counts] == " ")
+            //もし単語を入力し終わったら
+            if (this.word_index_counts == this.current_answer.length) {
+              this.nextQuestion(); //次の問題へ
+            }
+          } else {
+            this.miss_count++;
+            this.playSound(this.audio.miss); //ミス音
+            this.panelBlick();
           }
-        } else {
-          this.miss_count++;
-          this.playSound(this.audio.miss); //ミス音
-          this.panelBlick();
         }
       }
 
@@ -175,18 +188,22 @@ new Vue({
           //dataを作成
           var td = document.createElement("td");
           var data = this.questions[question][key];
+
+          //data true/falseを◯/×に変換
+          if (typeof(data) == "boolean")data = data? "◯" : "×";
+
           td.innerHTML = data;
           tr.appendChild(td);
           
         }
         //スコアテーブルの背景色を設定
-        if (this.questions[question]['miss_count'] > 0) 
+        if (this.questions[question]['isCorrect']) 
         {
-          tr.classList.add('table-danger');
+          tr.classList.add('table-success');
         }
         else 
         {
-          tr.classList.add('table-success');
+          tr.classList.add('table-danger');
         }
       }
     },
@@ -232,10 +249,10 @@ new Vue({
     },
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
-      if (this.miss_count > 0　|| this.hintMode){
+      if (this.isHint || this.hintMode){
         //表示
         opacity = 1;
-        transition = "0.5s"
+        transition = "0.2s"
       } else {
         //非表示
         opacity = 0;
