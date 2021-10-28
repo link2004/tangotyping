@@ -92,7 +92,7 @@ var vue  = new Vue({
       this.hint_string = this.current_answer;
       this.word_index_counts = 0;
       this.miss_count = 0;
-      this.isHint = false;
+      this.isHint = this.hintMode;
     },
     nextQuestion: function () {
       // タイマーストップ
@@ -278,7 +278,7 @@ var vue  = new Vue({
     hintStrStyleObj: function() {
       //ヒントの文字列を表示切替
       var opacity,transition;
-      if (this.isHint || this.hintMode){
+      if (this.isHint){
         //表示
         opacity = 1;
         transition = "0.2s"
