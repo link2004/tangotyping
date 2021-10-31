@@ -54,11 +54,10 @@
                         <div class="card-body">
                             <input v-model="RetryOption_miss" type="checkbox">ミス数が <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="0"> 以上の問題<br>
                             <input v-model="RetryOption_anki" type="checkbox">暗記していない問題<br>
-                            <button class="btn btn-primary" @click="MakeScoreTable">更新</button>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body" id="scoretable">
                             <table class="table table-bordered table-sm">
                                 <thead>
                                     <tr class="table-light">
@@ -71,7 +70,7 @@
                                 </thead>
                                 <tbody id="tbody">
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         
                     </div>
