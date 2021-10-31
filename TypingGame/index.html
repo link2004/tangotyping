@@ -34,7 +34,7 @@
                 <div v-if="this.scene=='game'" class="typeFormWrapper" v-cloak>
                     <div class="question">{{ current_question }}</div>
                     <div class="card-header border-0">
-                        <span>{{input_string}}</span><span style="color:gray" :style="hintStrStyleObj">{{hint_string}}</span>
+                        <span>{{input_string}}</span><span style="color:gray" :style="hintStrStyleObj" class=hint-str>{{hint_string}}</span>
                     </div>
                     
                     <div class="gauge progress mt-4">
