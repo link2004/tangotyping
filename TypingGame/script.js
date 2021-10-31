@@ -169,12 +169,13 @@ var vue  = new Vue({
     },
     
     onKeyDown: function (event) {
+      console.log(event.code,event.key);
       if (event.key == "Escape")this.returnHome();
       if (this.scene == "game") {
         //スペースキーが押されたら答え表示
         if (event.key == " "){
           this.isHint = true;
-        }else if (event.code.indexOf('Key') != -1 || event.code.indexOf('Digit') != -1){
+        }else if (event.key.length == 1){
           if (this.current_answer[this.word_index_counts] == event.key) {
             //入力したキーがあっているならば
             this.playSound(this.audio.type); //タイプ音
