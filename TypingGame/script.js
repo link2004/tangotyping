@@ -76,10 +76,10 @@ var vue  = new Vue({
       if (this.questions.length == 0) this.initQuestions();
 
       this.shuffleQuestions();
-      this.updateQuestion();
+      this.startQuestion();
       this.scene = "game";
     },
-    updateQuestion: function () {
+    startQuestion: function () {
       // タイマースタート
       this.time.saveDate(1);
       // 問題を更新する
@@ -112,7 +112,7 @@ var vue  = new Vue({
         })
 
       } else {
-        this.updateQuestion();
+        this.startQuestion();
       }
       
     },
@@ -140,7 +140,7 @@ var vue  = new Vue({
     },
     shuffleQuestions: function () {
       // 問題をシャッフル
-      let Q = this.questions();
+      let Q = this.questions;
       for (let i = Q.length - 1; i > 0; i--) {
         let r = Math.floor(Math.random() * (i + 1));
         let tmp = Q[i];
