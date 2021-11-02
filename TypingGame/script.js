@@ -169,7 +169,6 @@ var vue  = new Vue({
     },
     
     onKeyDown: function (event) {
-      console.log(event.code,event.key);
       if (event.key == "Escape")this.returnHome();
       if (this.scene == "game") {
         //スペースキーが押されたら答え表示
@@ -308,6 +307,18 @@ var vue  = new Vue({
       return {"opacity": opacity, "transition": transition}
     },
   },
+
+  watch: {
+    RetryOption_anki: function() {
+      this.MakeScoreTable();
+    },
+    RetryOption_miss: function() {
+      this.MakeScoreTable();
+    },
+    RetryOption_miss_num: function() {
+      this.MakeScoreTable();
+    }
+  }
 });
 
 //更新時にアラート
