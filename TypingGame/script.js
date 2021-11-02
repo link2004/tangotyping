@@ -67,18 +67,16 @@ var vue  = new Vue({
   },
   methods: {
     startGame: function () {
-      // ゲームスタート
       this.current_count = 0;
-      this.scene = "game";
 
-      this.selectQuestions();
+      //復習条件を満たしている問題を選択
+      this.selectRetryQuestions();
 
-      //もし問題がなくなったら初めからにする
+      //もし問題がなくなったら問題を初期化
       if (this.questions.length == 0) this.initQuestions();
 
-      this.questions = this.shuffle(this.questions); //問題をシャッフル
+      this.shuffleQuestions();
       this.updateQuestion();
-      // this.startFlg = true
       this.scene = "game";
     },
     updateQuestion: function () {
@@ -140,18 +138,20 @@ var vue  = new Vue({
         document.getElementById("gameScreen").style.background = "#ffffff";//100ms後元に戻す
       }, 100)
     },
-    shuffle: function (array) {
+    shuffleQuestions: function () {
       // 問題をシャッフル
-      for (let i = array.length - 1; i > 0; i--) {
+      let Q = this.questions();
+      for (let i = Q.length - 1; i > 0; i--) {
         let r = Math.floor(Math.random() * (i + 1));
-        let tmp = array[i];
-        array[i] = array[r];
-        array[r] = tmp;
+        let tmp = Q[i];
+        Q[i] = Q[r];
+        Q[r] = tmp;
       }
-      return array;
+      this.questions = Q;
     },
 
-    selectQuestions: function(){
+    selectRetryQuestions: function(){
+      //復習条件を満たしている問題の選別
       var selectedQuestions = [];
       for (var question in this.questions){
         var state1 = this.RetryOption_miss && this.questions[question]['miss_count'] >= this.RetryOption_miss_num;
