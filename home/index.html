@@ -18,10 +18,15 @@
             <div class="progress title-bar"></div>
         </div>
 
-        <div>
+        <div v-if="!isLogined">
             <button v-on:click="locate" class="btn btn-primary">ログイン</button>
         </div>
+
+        <div v-if="isLogined">
+            <p>{{userID}}</p>
+        </div>
     </div>
+    <script type="module" src="api.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
