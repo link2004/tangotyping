@@ -15,7 +15,7 @@ function login(userID,pass){
         false
     );
     var request = {
-        "userID": user1,
+        "userID": userID,
         "pass": pass
       }
     //xmlHttpRequest.setRequestHeader("Content-Type", "application/json")

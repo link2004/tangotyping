@@ -4,6 +4,7 @@ function getQuestions(){
     var userID = "riku0720"
     var title = "Fruit"
     if (getParam('title') != null) title = getParam('title');
+    if (getParam('userID') != null) userID = getParam('userID')
     var xmlHttpRequest = new XMLHttpRequest();
     xmlHttpRequest.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){

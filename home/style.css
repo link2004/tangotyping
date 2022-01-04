@@ -10,8 +10,9 @@ table {
     font-size:25px;
     padding-bottom:0px;
 }
-#scoretable{
-    height:300px;
+
+#table{
+    height: 300px;
     overflow-y: scroll;
 }
 p {
@@ -27,7 +28,7 @@ p {
 }
 
 .card {
-    margin:20px
+    padding:20px;
 }
 
 .option  {
