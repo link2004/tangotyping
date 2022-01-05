@@ -14,7 +14,7 @@ var vue  = new Vue({
             location.href =  URL_LOGIN_ID;
         },
         ClickedQuestion: function(title){
-            var request = "?userID=" + this.userID + "&title=" + title;
+            var request = "?userID=" + this.userID + "&title=" + title + "&token=" + api.getParam('token');
             location.href =  URL_GAME_ID + request;
         }
     },

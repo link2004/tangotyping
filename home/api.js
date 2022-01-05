@@ -68,5 +68,6 @@ function queryQuestion(userID){
 
 export default {
     verification_token,
-    queryQuestion
+    queryQuestion,
+    getParam
 }
