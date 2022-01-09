@@ -1,13 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Typing from '../views/Typing.vue'
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Typing',
-    component: Typing
+    path: '/', name:"home",
+    component: () => import('../views/Home.vue'),
+    props:true
+  },
+  { 
+    path: '/login', component: () => import('../views/Login.vue'), 
+  },
+  {
+    path: '/typing/:id', name:"typing",
+    component: () => import('../views/Typing.vue'),
   },
   {
     path: '/about',

@@ -2,7 +2,7 @@
   <div id="app">
     <div id="header">
       <h1 id="title">Tango Typing</h1>
-      <div class="progress title-bar"></div>
+      <div class="title-bar"></div>
     </div>
     <div id="body"><router-view/></div>
     
@@ -34,5 +34,9 @@
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+}
+.title-bar {
+  height: 2px;
+  background-color: #e9ecef;
 }
 </style>
