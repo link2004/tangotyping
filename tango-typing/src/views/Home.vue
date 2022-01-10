@@ -1,24 +1,30 @@
 <template>
 <div id="app" class="container text-center mt-5">
   <div v-show="!isLogined" v-cloak>
-      <router-link to="login" class="btn btn-primary">ログイン</router-link>
   </div>
 
   <div v-show="isLogined" v-cloak>
-    <p>{{userID}}</p>
     <div class="card">
-      <div class="card-body" id="table">
-        <table class="table table-bordered table-sm">
-          <tbody>
-            <tr v-for="(question,key) in questions" :key=key>
-              <td>
-                <router-link :to="{name:'typing',params:{id:question.id}}">
-                  {{question.title}}
-                </router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card-header">マイページ</div>
+      <div class="card-body">
+        <div @click="CreateNew" class="btn-primary new-btn">新規作成</div>
+        <div id="table">
+          <table class="table table-bordered table-sm">
+            <tbody>
+              <tr v-for="(question,key) in questions" :key=key>
+                <td>
+                  <div class="td">
+                    <router-link class="question-link" :to="{name:'typing',params:{id:question.id}}">
+                      {{question.title}}
+                    </router-link>
+                    <button @click="Edit(question.id)" class="edit-btn btn btn-secondary btn-sm">編集</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -28,22 +34,28 @@
 <script>
 import api from '../api.js'
 export default {
-  props:{
-    token: String
-  },
+
   data() {
     return {
+      questions: [],
       isLogined: false,
       userID: "",
-      questions: []
+    }
+  },
+  methods:{
+    CreateNew: function(){
+      this.$cookies.set('TableID',null);
+      this.$router.push({name:'edit'});
+    },
+    Edit: function(id){
+      this.$cookies.set('TableID',id);
+      this.$router.push({name:'edit'});
     }
   },
   mounted: function(){
-    if(this.token==null)return;
-    var response = api.verification_token(this.token);
-    if(response.isSuccess){
-      this.isLogined = true;
-      this.userID = response.Item.sub;
+    this.userID = this.$parent.userID;
+    this.isLogined = this.$parent.isLogined;
+    if(this.isLogined){
       var items = api.queryQuestion(this.userID).questions;
       for (var item in items){
         this.questions[item] = {
@@ -55,3 +67,21 @@ export default {
   }
 }
 </script>
+
+<style>
+#table{
+  max-height:300px;
+  overflow-y: scroll;
+}
+.new-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
+}
+.question-link{
+  margin:auto;
+}
+.td{
+  display: flex;
+}
+
+</style>

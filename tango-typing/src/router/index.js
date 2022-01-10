@@ -6,10 +6,16 @@ const routes = [
   {
     path: '/', name:"home",
     component: () => import('../views/Home.vue'),
-    props:true
   },
   { 
     path: '/login', component: () => import('../views/Login.vue'), 
+  },
+  {
+    path: '/signin', component: () => import('../views/Signin.vue'),
+  },
+  {
+    path: '/edit', name:"edit",
+    component: () => import('../views/Edit.vue'),
   },
   {
     path: '/typing/:id', name:"typing",
