@@ -25,7 +25,7 @@
             <th scope="col">答え(英語)</th>
           </tr>
           <tr v-for="(question,key) in this.questions" :key=key>
-            <th scope="row">{{key}}</th>
+            <th scope="row">{{key+1}}</th>
             <td><input type="text" ref="input" @focus="setFocus(key*2)" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
             <td><input type="text" ref="input" @focus="setFocus(key*2+1)" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
           </tr>
@@ -35,8 +35,8 @@
       </table>
       <p class="text-danger">{{ message }}</p>
       <div class="bottom-btn">
-      <button class="btn-primary" @click="ClickedSaveBtn" v-if="mode=='new'">保存</button>
-      <button class="btn-primary" @click="ClickedUpdateBtn" v-if="mode=='update'">更新</button>
+      <button class="btn-primary btn-block" @click="ClickedSaveBtn" v-if="mode=='new'">保存</button>
+      <button class="btn-primary btn-block" @click="ClickedUpdateBtn" v-if="mode=='update'">更新</button>
       </div>
       
 
@@ -206,6 +206,10 @@ export default {
 </script>
 
 <style>
+.container {
+  margin-top: 2rem;
+  margin-bottom: 7rem;
+}
 .table input:focus{
   border-color:skyblue !important;
   background-color:white !important;
@@ -220,7 +224,10 @@ export default {
 }
 .table td{
   padding: 0px;
-  height: 30px;
+  height: 0rem;
+}
+.table tr{
+  line-height: 1rem;
 }
 .top-btn{
   display:flex;
@@ -237,7 +244,6 @@ export default {
   display:flex;
 }
 .bottom-btn button{
-  width: 30%;
   border-radius: 0.3rem;
   margin-left: auto;
 }

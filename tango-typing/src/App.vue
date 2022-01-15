@@ -1,25 +1,25 @@
 <template>
   <div id="app">
     <header>
-      <b-navbar toggleable="lg" type="light" variant="light">
+      <b-navbar toggleable="lg" type="light" variant="light" class="border-bottom shadow-sm">
         <b-navbar-brand to="/">TangoTyping</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>    
-          <b-navbar-nav style="margin-left:auto">
-            <b-nav-item to="login" v-if="!isLogined">ログイン</b-nav-item>
-            <b-nav-item-dropdown v-if="isLogined" right>
-              <template #button-content>
-                <em>ユーザー</em>
-              </template>
+          <b-navbar-nav class="ml-auto" v-if="!isLogined">
+            <b-nav-item to="login" class="my-auto">ログイン</b-nav-item>
+            <b-nav-item>
+              <b-button to="signup" size="sm" variant="outline-primary">新規登録</b-button>
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto" v-if="isLogined">
+            <b-nav-item-dropdown :text="this.userID" right>
               <b-dropdown-item href="#" to="/">マイページ</b-dropdown-item>
               <b-dropdown-item href="#" @click="Logout">ログアウト</b-dropdown-item>
             </b-nav-item-dropdown>
-          </b-navbar-nav>
-          
+          </b-navbar-nav>  
         </b-collapse>
-        
       </b-navbar>
     </header>
     
@@ -83,6 +83,13 @@ export default {
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+}
+.input-form {
+  max-width: 25rem;
+  border-radius: 0.5rem;
+}
+.form-control{
+  margin-bottom:1rem;
 }
 nav{
   padding:20px

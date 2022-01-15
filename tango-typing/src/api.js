@@ -96,7 +96,7 @@ function updateQuestions(token,title,data,tableID){
 }
 
 
-function signin(userID,pass){
+function signup(userID,pass){
     var response,request;
 
     xhr.onreadystatechange = function(){
@@ -198,7 +198,7 @@ export default {
   deleteQuestions,
   putQuestions,
   updateQuestions,
-  signin,
+  signup,
   login,
   verification_token,
   queryQuestion
