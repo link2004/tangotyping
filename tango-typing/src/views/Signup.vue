@@ -47,12 +47,14 @@ export default {
       if(this.input_pass != this.input_pass2 && flg == true){this.msg_list.push("パスワードが一致しません");flg=false;}
 
       if(flg){
-        this.signup;
+        this.signup();
       }
     },
     signup: function(){
+      
       this.isLoading = true;
       var response = api.signup(this.input_userID,this.input_pass);
+      console.log(response);
       if(response.statusCode == 200){
         response = api.login(this.input_userID,this.input_pass);
         if(response.statusCode == 200){
