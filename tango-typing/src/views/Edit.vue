@@ -7,7 +7,7 @@
           <router-link class="btn btn-secondary" to="/">戻る</router-link>
         </div>
         <div class="btn-right">
-          <button class="btn btn-danger" @click="Delete" v-if="mode=='update'">削除</button>
+          <button class="btn btn-danger" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
         </div>
       </div>
       <div class="input-group mb-3">
@@ -16,47 +16,76 @@
         </div>
         <input type="text" class="form-control" v-model="question_title">
       </div>
-      
-      <table class="table table-bordered" id="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">問題(日本語)</th>
-            <th scope="col">答え(英語)</th>
-          </tr>
-          <tr v-for="(question,key) in this.questions" :key=key>
-            <th scope="row">{{key+1}}</th>
-            <td><input type="text" ref="input" @focus="setFocus(key*2)" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
-            <td><input type="text" ref="input" @focus="setFocus(key*2+1)" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-        </tbody>
-      </table>
-      <p class="text-danger">{{ message }}</p>
-      <div class="bottom-btn">
-      <button class="btn-primary btn-block" @click="ClickedSaveBtn" v-if="mode=='new'">保存</button>
-      <button class="btn-primary btn-block" @click="ClickedUpdateBtn" v-if="mode=='update'">更新</button>
+      <div>
+        <table class="table table-bordered" id="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">問題(日本語)</th>
+              <th scope="col">答え(英語)</th>
+            </tr>
+          </thead>
+          <draggable v-model="questions" tag="tbody" :options="{handle:'.handle',animation:300}" ghost-class="ghost">
+            <tr v-for="(question,key) in this.questions" :key=key valign="middle">
+              <th scope="row">{{key+1}}</th>
+              <td><input type="text" ref="input" @focus="setFocus(key*2)" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
+              <td><input type="text" ref="input" @focus="setFocus(key*2+1)" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
+              <td class="bi bi-trash-fill btn-light" style="line-height:2.5rem;" @click="ClickedDelLine(key)"></td>
+              <td class="handle bi bi-list" style="line-height:2.5rem;"></td>
+            </tr>
+          </draggable>
+          
+          
+        </table>
+       <button class="btn btn-outline-secondary btn-block mb-3" @click="AddLine">行を追加</button>
       </div>
       
+      <b-alert class="mb-3" variant="danger" :show="blankAlert">空白を含む行があります</b-alert>
+      <div class="bottom-btn">
+      <button class="btn btn-primary btn-block" @click="ClickedSaveBtn" v-if="mode=='new'">保存</button>
+      <button class="btn btn-primary btn-block" @click="ClickedUpdateBtn" v-if="mode=='update'">更新</button>
+      </div>
+      
+      <b-modal id="del-line" @ok="DelLine(delLineIndex)" hide-header ok-title="削除">
+        <p class="my-2">行を削除しますか？</p>
+      </b-modal>
+
+      <b-modal id="update-mdl" @ok="Update" ok-title="更新" :title="question_title+'を更新'">
+        <p class="my-2">問題を更新しますか？</p>
+      </b-modal>
+
+      <b-modal id="save-mdl" @ok="Save" ok-title="保存" :title="question_title+'を保存'">
+        <p class="my-2">問題を保存しますか？</p>
+      </b-modal>
+
+      <b-modal id="delete-mdl" @ok="Delete" ok-title="削除" ok-variant="danger" :title="question_title+'を削除'">
+        <p class="my-2">本当に削除しますか？</p>
+      </b-modal>
 
   </div>
 </template>
 
 <script>
 import api from '../api.js'
+import draggable from 'vuedraggable'
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 export default {
+  components: {
+    'draggable': draggable,
+  },
   data() {
     return {
       question_title:"新規データ",
-      questions: [
-        ["",""],
-      ],
+      questions: [],
+      draggingIndex: null,
       focusIndex: 0,
       message: "",
       mode: "",
       token: null,
       tableID: null,
+      delLineIndex: null,
+      blankAlert: false,
     }
   },
   methods:{
@@ -65,6 +94,7 @@ export default {
       if(data.statusCode == 200){
         this.question_title = data.body.title;
         this.questions = data.body.info.questions;
+        console.log(this.questions);
         return true
       }else{
         return false
@@ -73,18 +103,27 @@ export default {
     ClickedSaveBtn: function(){
       this.deleteNull();
       if(this.check_blank()){
-        this.message = "空白があります";
+        this.blankAlert = true;
         return;
       }
-      this.Save();
+      this.$bvModal.show("save-mdl");
     },
     ClickedUpdateBtn: function(){
       this.deleteNull();
       if(this.check_blank()){
-        this.message = "空白があります";
+        this.blankAlert = true;
         return;
       }
-      this.Update();
+      this.$bvModal.show("update-mdl");
+    },
+    ClickedDelLine: function(i){
+      console.log(i,this.questions[i]);
+      if(this.questions[i][0]==""&&this.questions[i][1]==""){
+        this.DelLine(i);
+      }else{
+        this.delLineIndex = i;
+        this.$bvModal.show("del-line");
+      }
     },
     deleteNull: function (){
       //未入力の行を削除
@@ -113,7 +152,6 @@ export default {
       }
       return false
     },
-    
     Save: function(){
       var response = api.putQuestions(this.token, this.question_title, this.questions);
       if(response.statusCode == 200){
@@ -147,7 +185,10 @@ export default {
       this.focusIndex = index;
     },
     AddLine: function(){
-      this.questions.push(["",""])
+      this.questions.push(["",""]);
+    },
+    DelLine: function(index){
+      this.questions.splice(index,1);
     },
     onKeyDown: function(event){
       switch (event.key){
@@ -190,6 +231,7 @@ export default {
       this.mode = "update";
     }else{
       this.mode = "new"
+      this.AddLine();
     }
 
     
@@ -199,7 +241,7 @@ export default {
       this.$refs.input[this.focusIndex].select();
     },
     questions: function(){
-      if(this.check_blank()==false)this.message="";
+      if(this.check_blank()==false)this.blankAlert=false;
     }
   }
 }
@@ -215,7 +257,7 @@ export default {
   background-color:white !important;
   outline: 0 none;
 }
-.table input{
+.table input,.table i{
   width: 100%;
   height: 100%;
   border: solid;
@@ -223,7 +265,7 @@ export default {
   background-color:transparent
 }
 .table td{
-  padding: 0px;
+  padding: 0 !important;
   height: 0rem;
 }
 .table tr{
@@ -244,7 +286,9 @@ export default {
   display:flex;
 }
 .bottom-btn button{
-  border-radius: 0.3rem;
-  margin-left: auto;
+  height: 3rem;
+}
+.ghost{
+  opacity: 60%;
 }
 </style>
