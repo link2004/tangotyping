@@ -23,7 +23,7 @@
       </b-navbar>
     </header>
     
-    <div id="body"><router-view/></div>
+    <div class="container"><router-view/></div>
     
   </div>
 </template>
@@ -36,6 +36,7 @@ export default {
       userID: "",
       isLogined: false,
       token: "",
+      questions: null,
     }
   },
   methods: {
@@ -51,9 +52,22 @@ export default {
           this.$cookies.set('LoginToken',this.token);
           this.isLogined = true;
           this.userID = response.Item.sub;
+          this.questions = this.queryQuestions(this.userID);
         }
       }
-    } 
+    },
+    queryQuestions: function(userID){
+      //userIDから、問題をクエリ
+      var questions = [];
+      var items = api.queryQuestion(userID).questions;
+      for (var item in items){
+        questions[item] = {
+          "title":items[item].title,
+          "id":items[item].id
+        };
+      }
+      return questions;
+    }
   },
   mounted: function(){
     this.Login();
@@ -77,12 +91,6 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
-
-#body {
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 .input-form {
   max-width: 25rem;

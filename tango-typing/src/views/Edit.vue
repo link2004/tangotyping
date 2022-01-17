@@ -1,5 +1,5 @@
 <template>
-  <div class="container" id="app">
+  <div class="container">
       <p>移動：矢印キー,Tab,Enter 行追加：最下行でEnter
       </p>
       <div class="top-btn">
@@ -221,10 +221,10 @@ export default {
 
     //cookieから変数を読み込む
     this.token  = this.$cookies.get('LoginToken');
-    this.tableID = this.$cookies.get('TableID');
+    this.tableID = this.$route.params.id;
 
     //ログインしてなかったらログイン画面へ飛ばす
-    if(this.token == "null") this.$router.replace('/login');
+    if(!this.$parent.isLogined) this.$router.replace('/login');
     
     //tableIDの有無により新規作成か編集か判別
     if(this.setData()){

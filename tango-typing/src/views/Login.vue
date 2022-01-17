@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container text-center mt-5">
+  <div class="container text-center mt-5">
     <div class="card mx-auto shadow input-form">
       <div class="card-body">
         <h5 class="card-title">ログイン</h5>

@@ -9,7 +9,7 @@
   </div>
   <div v-if="this.scene=='game'" class="game-screen card-body" :style="panelStyleObj" v-cloak>
     <div class="question">{{ current_question }}</div>
-    <div class="card-header border-0 input-form">
+    <div class="card-header border-0 typing-area">
       <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
     </div>
     
@@ -320,7 +320,7 @@ export default {
 .game-screen {
   font-size: 25px;
 }
-.input-form {
+.typing-area {
   font-variant-ligatures: no-common-ligatures;
 }
 .card {

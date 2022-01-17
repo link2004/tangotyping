@@ -1,38 +1,50 @@
 <template>
-<div id="app" class="container text-center mt-5">
-  <div v-show="!isLogined" v-cloak>
+<div class="text-center mt-5">
+  <div v-show="!this.$parent.isLogined" v-cloak>
   </div>
 
-  <div v-show="isLogined" v-cloak>
-    <div class="card">
-      <div class="card-header">マイページ</div>
-      <div class="card-body">
-        <div @click="CreateNew" class="btn-primary new-btn">新規作成</div>
-        <div id="table">
-          <table class="table table-bordered table-sm">
-            <tbody>
-              <tr v-for="(question,key) in questions" :key=key>
-                <td>
-                  <div class="td">
-                    <router-link class="question-link" :to="{name:'typing',params:{id:question.id}}">
-                      {{question.title}}
-                    </router-link>
-                    <button @click="Edit(question.id)" class="edit-btn btn btn-secondary btn-sm">編集</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <div v-show="this.$parent.isLogined" v-cloak>
+
+    <div @click="CreateNew" class="btn-primary new-btn mb-3" style="font-size:1.3rem">新規作成</div>
+    <div class="card shadow-sm mb-2">
+      <div class="card-header p-2 bg-secondary text-white" style="font-size:1.3rem">マイ単語帳</div>
+      <div class="card-body list-body" style="font-size:1.4rem;font-weight:bold;">
+        <div class="px-4">
+          <div
+          class="card mb-2 shadow-sm bg-light"
+          v-for="(question,key) in this.$parent.questions"
+          :key=key
+          @click="ClickedQuestion(question)">
+            <div class="card-body p-2">{{question.title}}</div>
+          </div>
         </div>
-        
       </div>
     </div>
+
+    <b-modal id="start-menu" size="lg" centered hide-header ok-only ok-title="閉じる">
+      <b-container class="modal-body" fluid>
+        <div class="my-auto">
+          <h1 class="mb-4">{{selected_question.title}}</h1>
+          <button
+          class="btn btn-primary btn-block"
+          style="font-size:1.7rem;"
+          @click="$router.push({name:'typing',params:{id:selected_question.id}})">
+            スタート
+          </button>
+          <button
+          @click="Edit(selected_question.id)"
+          class="edit-btn btn btn-secondary btn-block">
+            編集
+          </button>
+        </div>
+      </b-container>
+    </b-modal>
+
   </div>
 </div>
 </template>
 
 <script>
-import api from '../api.js'
 export default {
 
   data() {
@@ -40,39 +52,37 @@ export default {
       questions: [],
       isLogined: false,
       userID: "",
+      selected_question: {
+        title: null,
+        id: null
+      },
     }
   },
   methods:{
     CreateNew: function(){
-      this.$cookies.set('TableID',null);
       this.$router.push({name:'edit'});
     },
     Edit: function(id){
-      this.$cookies.set('TableID',id);
-      this.$router.push({name:'edit'});
-    }
-  },
-  mounted: function(){
-    this.userID = this.$parent.userID;
-    this.isLogined = this.$parent.isLogined;
-    if(this.isLogined){
-      var items = api.queryQuestion(this.userID).questions;
-      for (var item in items){
-        this.questions[item] = {
-          "title":items[item].title,
-          "id":items[item].id
-        };
-      }
+      this.$router.push({name:'edit',params:{id:id}})
+    },
+    ClickedQuestion: function(item){
+      console.log(item);
+      this.selected_question = item;
+      this.$bvModal.show('start-menu');
     }
   }
 }
 </script>
 
 <style>
-#table{
-  max-height:300px;
+#start-menu{
+  text-align: center;
+}
+.list-body{
+  max-height:40rem;
   overflow-y: scroll;
 }
+
 .new-btn {
   padding: 0.5rem 1rem;
   border-radius: 0.3rem;
@@ -83,5 +93,4 @@ export default {
 .td{
   display: flex;
 }
-
 </style>

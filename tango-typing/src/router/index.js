@@ -14,7 +14,7 @@ const routes = [
     path: '/signup', component: () => import('../views/Signup.vue'),
   },
   {
-    path: '/edit', name:"edit",
+    path: '/edit/:id', name:"edit",
     component: () => import('../views/Edit.vue'),
   },
   {
