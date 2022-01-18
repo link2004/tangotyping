@@ -1,15 +1,8 @@
 <template>
-<div class="card">
-  <div v-if="this.scene=='home'" v-cloak>
-    <div class="card-header title">{{questions_title}}</div>
-    <div class="card-body option">
-      <input v-model="hintMode" type="checkbox">答えを常に表示<br>
-      <button class="btn btn-primary btn-lg" @click="startGame">ゲームスタート(Enter)</button>
-    </div>
-  </div>
-  <div v-if="this.scene=='game'" class="game-screen card-body" :style="panelStyleObj" v-cloak>
-    <div class="question">{{ current_question }}</div>
-    <div class="card-header border-0 typing-area">
+<div class="h-100 flex-col" :style="panelStyleObj">
+  <div v-if="this.scene=='game'" class="game-screen my-auto"  v-cloak>
+    <div class="question my-3" style="font-size:2rem;">{{ current_question }}</div>
+    <div class="card-header border-0 typing-area" style="font-size:2rem;">
       <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
     </div>
     
@@ -19,40 +12,57 @@
     <div>{{current_count}}/{{this.questions.length}}</div>
   </div>
   <div v-if="this.scene=='result'" class="card-body" v-cloak>
-    <h1 style="color:orange;">Clear!</h1>
-    <button class="btn btn-primary" @click="startGame">リトライ(Enter)</button>
-    <button class="btn btn-secondary" @click="returnHome">戻る(Esc)</button>
-    <p><input v-model="hintMode" type="checkbox">答えを常に表示</p>
-    <div class="card option">
-      <div class="card-header">リトライ設定</div>
-      <div class="card-body">
-        <input v-model="RetryOption_miss" type="checkbox">ミス数が <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="0"> 以上の問題<br>
-        <input v-model="RetryOption_anki" type="checkbox">暗記していない問題<br>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">結果</div>
-      <div class="card-body" id="scoretable">
-        <table class="table table-bordered table-sm">
-          <thead>
-            <tr class="table-light">
-              <th scope="col">問題</th>
-              <th scope="col">解答</th>
-              <th scope="col">時間</th>
-              <th scope="col">ミス</th>
-              <th scope="col">暗記</th>
+    <div class="row text-left h-100">
+      <div class="col">
+        <table class="table">
+          <tbody>
+            <tr>
+              <th scope="col" class="p-1">問題</th>
+              <th scope="col" class="p-1 text-center">ミス</th>
+              <th scope="col" class="p-1 text-center">暗記</th>
             </tr>
-            <tr v-for="(q,key) in this.questions" :key=key :class="tableCol(q.miss_count,q.isCorrect)">
-              <td>{{q.japanese}}</td>
-              <td>{{q.english}}</td>
-              <td>{{q.time}}</td>
-              <td>{{q.miss_count}}</td>
-              <td><div v-if="q.isCorrect">◯</div><div v-else>×</div></td>
+            <tr v-for="(q,key) in this.questions" :key=key>
+              <td class="col-9 p-1">
+                <div style="font-size:.9rem">{{q.japanese}}</div>
+
+
+                
+                <div class="text-success" :class="optionCol(q.miss_count,q.isCorrect)">{{q.english}}</div>
+              </td>
+              <td class="text-center" :class="optionCol(q.miss_count,true)">{{q.miss_count}}</td>
+              <td class="text-center" :class="optionCol(0,q.isCorrect)">
+                <div class="bi bi-circle" v-if="q.isCorrect"></div>
+                <div class="bi bi-x-lg" v-else></div>
+              </td>
             </tr>
-          </thead>
-          <tbody id="tbody">
+            <tr><td colspan="3"></td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="col-4">
+        <div class="card h-100">
+          <div class="card-body flex-col">
+            <div class="card-title border-bottom">リトライ設定</div>
+            <div class="form-check">
+              <input class="form-check-input" style="margin-top:0.5rem;" v-model="RetryOption_miss" type="checkbox" id="checkbox-missnum">
+              <label for="checkbox-missnum">
+                ミス数が
+                <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="0">
+                以上
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" v-model="RetryOption_anki" type="checkbox" id="checkbox-anki">
+              <label for="checkbox-anki">
+                暗記していない
+              </label>
+            </div>
+            <div class="text-center mt-auto">
+              <p class="text-secondary mb-0" style="font-size:16px">赤文字の問題が対象</p>
+              <button class="btn btn-danger btn-block btn-lg" @click="startGame">復習 (Enter)</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -62,6 +72,7 @@
 
 <script>
 import api from "../api.js"
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 class question_C {
   constructor(japanese, english) {
@@ -107,7 +118,7 @@ export default {
         miss: new Audio("../audio/miss.mp3"),
         type: new Audio("../audio/type.mp3"),
       },
-      scene: "home", //{"home","game","result"}
+      scene: null, //{"home","game","result"}
       current_question: "",
       current_answer: "",
       current_count: 0,
@@ -134,7 +145,6 @@ export default {
     },
   methods:{
     startGame: function () {
-      console.log("startGame");
       this.current_count = 0;
 
       //復習条件を満たしている問題を選択
@@ -151,7 +161,6 @@ export default {
       // タイマースタート
       this.time.saveDate(1);
       // 問題を更新する
-      console.log(this.questions);
       this.current_question = this.questions[this.current_count].japanese;
       this.current_answer = this.questions[this.current_count].english;
       this.input_string = "";
@@ -180,8 +189,7 @@ export default {
       
     },
     returnHome: function(){
-      this.initQuestions();
-      this.scene = "home";
+      this.$router.push({name:'start',props:{id:this.$route.params.id}})
     },
     initQuestions: function(){
       //問題をはじめからにする
@@ -189,7 +197,6 @@ export default {
       //すべての問題を初期化
       this.questions.forEach(question => {
         question.init();
-        console.log("init questions")
       });
 
       this.questions = this.all_questions_data;
@@ -227,6 +234,7 @@ export default {
       sound.play(); //再生
     },
     onKeyDown: function (event) {
+      if(this.$route.name != 'typing')return;
       if (event.key == "Escape")this.returnHome();
       if (this.scene == "game") {
         if (this.current_question == this.questions.length)return;
@@ -256,11 +264,9 @@ export default {
             this.playSound(this.audio.miss); //ミス音
             this.panelBlick();
           }
-        }
-        
-      }
-      else if (event.key == "Enter") {
-        this.startGame();
+        } 
+      }else{
+        if(event.key == "Enter")this.startGame();
       }
     },
     LoadQuestions: function(file){
@@ -271,11 +277,10 @@ export default {
         this.all_questions_data.push(new question_C(jp,en));
       }
     },
-    tableCol: function(miss_count,isCorrect){
+    optionCol: function(miss_count,isCorrect){
       var state1 = this.RetryOption_miss && miss_count >= this.RetryOption_miss_num;
       var state2 = this.RetryOption_anki && !isCorrect;
-      if (state1 || state2) return "table-danger";
-      else return "table-success";
+      if (state1 || state2) return "text-danger";
     }
   },
   //htmlページを開いた直後
@@ -284,7 +289,8 @@ export default {
     document.addEventListener("keydown", this.onKeyDown);
     var file = api.getQuestions(this.$route.params.id);
     this.questions_title = file.body.title;
-    this.LoadQuestions(file.body.info.questions);
+    this.LoadQuestions(file.body.info.questions)
+    this.startGame();
   },
   computed: {
     q_gaugeStyleObj: function () {
@@ -317,23 +323,20 @@ export default {
 }
 </script>
 <style>
+.flex-col{
+  display:flex; 
+  flex-direction: column;
+}
 .game-screen {
   font-size: 25px;
 }
 .typing-area {
   font-variant-ligatures: no-common-ligatures;
 }
-.card {
-    margin:20px;
-}
 .title{
     font-size: 30px;
 }
 #hint-str {
   color:gray;
-}
-#scoretable{
-    max-height:300px;
-    overflow-y: scroll;
 }
 </style>

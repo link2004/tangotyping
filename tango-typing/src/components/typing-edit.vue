@@ -1,11 +1,9 @@
 <template>
-  <div class="container">
-      <p>移動：矢印キー,Tab,Enter 行追加：最下行でEnter
-      </p>
+  <div class="container flex-col h-100">
       <div class="top-btn">
-        <div class="btn-left">
-          <router-link class="btn btn-secondary" to="/">戻る</router-link>
-        </div>
+        <!-- <div class="btn-left">
+          <router-link class="btn btn-secondary" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
+        </div> -->
         <div class="btn-right">
           <button class="btn btn-danger" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
         </div>
@@ -16,8 +14,8 @@
         </div>
         <input type="text" class="form-control" v-model="question_title">
       </div>
-      <div>
-        <table class="table table-bordered" id="table">
+      <div class="scroll">
+        <table class="table table-bordered edit-table" id="table">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -28,8 +26,8 @@
           <draggable v-model="questions" tag="tbody" :options="{handle:'.handle',animation:300}" ghost-class="ghost">
             <tr v-for="(question,key) in this.questions" :key=key valign="middle">
               <th scope="row">{{key+1}}</th>
-              <td><input type="text" ref="input" @focus="setFocus(key*2)" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
-              <td><input type="text" ref="input" @focus="setFocus(key*2+1)" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
+              <td><input type="text" ref="input" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
+              <td><input type="text" ref="input" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
               <td class="bi bi-trash-fill btn-light" style="line-height:2.5rem;" @click="ClickedDelLine(key)"></td>
               <td class="handle bi bi-list" style="line-height:2.5rem;"></td>
             </tr>
@@ -61,7 +59,6 @@
       <b-modal id="delete-mdl" @ok="Delete" ok-title="削除" ok-variant="danger" :title="question_title+'を削除'">
         <p class="my-2">本当に削除しますか？</p>
       </b-modal>
-
   </div>
 </template>
 
@@ -155,16 +152,13 @@ export default {
     Save: function(){
       var response = api.putQuestions(this.token, this.question_title, this.questions);
       if(response.statusCode == 200){
-        this.$cookies.set('TableID',response.Item.id);
-        this.$router.replace('/');
+        this.$router.push({name:'start',params:{id:this.$route.params.id}});
       }
-      
     },
     Update: function(){
       var response = api.updateQuestions(this.token, this.question_title, this.questions, this.tableID);
       if(response.statusCode == 200){
-        this.$cookies.set('TableID',response.Item.id);
-        this.$router.replace('/');
+        this.$router.push({name:'start',params:{id:this.$route.params.id}});
       }
     },
     Delete: function(){
@@ -222,9 +216,6 @@ export default {
     //cookieから変数を読み込む
     this.token  = this.$cookies.get('LoginToken');
     this.tableID = this.$route.params.id;
-
-    //ログインしてなかったらログイン画面へ飛ばす
-    if(!this.$parent.isLogined) this.$router.replace('/login');
     
     //tableIDの有無により新規作成か編集か判別
     if(this.setData()){
@@ -248,9 +239,13 @@ export default {
 </script>
 
 <style>
-.container {
-  margin-top: 2rem;
-  margin-bottom: 7rem;
+.flex-col{
+  display:flex; 
+  flex-direction: column;
+}
+.scroll{
+  overflow-y: scroll;
+  max-height: 24rem;
 }
 .table input:focus{
   border-color:skyblue !important;
@@ -264,7 +259,7 @@ export default {
   border-color: white;
   background-color:transparent
 }
-.table td{
+.edit-table td{
   padding: 0 !important;
   height: 0rem;
 }
@@ -275,8 +270,8 @@ export default {
   display:flex;
   padding-bottom: 1rem;
 }
-.btn-left{
-  margin-right: auto;
+.btn-right{
+  margin-left: auto;
 }
 .top-btn .btn {
   padding-right: 2rem;

@@ -15,7 +15,7 @@
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto" v-if="isLogined">
             <b-nav-item-dropdown :text="this.userID" right>
-              <b-dropdown-item href="#" to="/">マイページ</b-dropdown-item>
+              <b-dropdown-item href="#" to="/mypage">マイページ</b-dropdown-item>
               <b-dropdown-item href="#" @click="Logout">ログアウト</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>  
@@ -23,7 +23,9 @@
       </b-navbar>
     </header>
     
-    <div class="container"><router-view/></div>
+    <div class="container">
+      <router-view/>
+    </div>
     
   </div>
 </template>

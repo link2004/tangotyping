@@ -15,7 +15,7 @@
           <div v-show="!isLoading">ログイン</div>
         </button>
         <div>or</div>
-        <router-link to="/signup"  class="text-primary">サインイン</router-link>
+        <router-link to="/signup"  class="text-primary">サインアップ</router-link>
       </div>
       
     </div>
@@ -50,7 +50,7 @@ export default {
       if(response.statusCode == 200){
         this.$cookies.set('LoginToken',response.Item.token);
         this.$parent.Login();
-        this.$router.push({name:'home'});
+        this.$router.push({name:'mypage'});
       }else{
         this.msg_list.push("パスワードまたはユーザー名が違います");
       }
