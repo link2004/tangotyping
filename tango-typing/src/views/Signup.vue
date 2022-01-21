@@ -1,8 +1,8 @@
 <template>
-  <div id="app" class="container text-center mt-5">
+  <div class="container text-center mt-5">
     <div class="card mx-auto shadow input-form">
       <div class="card-body">
-        <h5 class="card-title">サインイン</h5>
+        <h5 class="card-title">サインアップ</h5>
         <div class="text-left">
           <label for="user-id">ユーザー名</label>
           <input type="text" class="form-control" id="user-id" v-model="input_userID">
@@ -60,7 +60,7 @@ export default {
         if(response.statusCode == 200){
           this.$cookies.set('LoginToken',response.Item.token);
           this.$parent.Login();
-          this.$router.push({name:'home'});
+          this.$router.push({name:'mypage'});
         }
       }else{
         this.msg_list.push("そのユーザーIDは既に存在しています");

@@ -4,22 +4,37 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/', name:"home",
-    component: () => import('../views/Home.vue'),
+    path: '/mypage', name:"mypage",
+    component: () => import('../views/Mypage.vue'),
+    children:[
+      {
+        path:'m',name:"modal",
+        component: () => import('../components/modal.vue'),
+        props: true,
+        children:[
+          {
+            path:'start/:id',name:"start",
+            component: () => import('../components/typing-start.vue'),
+            props: true,
+          },
+          {
+            path: 'typing/:id', name:"typing",
+            component: () => import('../components/typing-game.vue'),
+          },
+          {
+            path: 'edit/:id', name:"edit",
+            component: () => import('../components/typing-edit.vue'),
+          }
+        ]
+      },
+
+    ]
   },
   { 
     path: '/login', component: () => import('../views/Login.vue'), 
   },
   {
     path: '/signup', component: () => import('../views/Signup.vue'),
-  },
-  {
-    path: '/edit', name:"edit",
-    component: () => import('../views/Edit.vue'),
-  },
-  {
-    path: '/typing/:id', name:"typing",
-    component: () => import('../views/Typing.vue'),
   },
   {
     path: '/about',
