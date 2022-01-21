@@ -72,7 +72,7 @@
 
 <script>
 import api from "../api.js"
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 class question_C {
   constructor(japanese, english) {
