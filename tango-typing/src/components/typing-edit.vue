@@ -1,12 +1,10 @@
 <template>
   <div class="container flex-col h-100">
-      <div class="top-btn">
-        <!-- <div class="btn-left">
-          <router-link class="btn btn-secondary" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
-        </div> -->
-        <div class="btn-right">
-          <button class="btn btn-danger" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
-        </div>
+      
+      <div class="d-flex mb-3">
+        <router-link class="btn btn-secondary px-4" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
+        <button class="btn btn-info ml-2 px-4" v-b-modal.excel-mdl>Excelで編集</button>
+        <button class="btn btn-danger ml-auto px-4" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
       </div>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -59,6 +57,25 @@
       <b-modal id="delete-mdl" @ok="Delete" ok-title="削除" ok-variant="danger" :title="question_title+'を削除'">
         <p class="my-2">本当に削除しますか？</p>
       </b-modal>
+
+      <b-modal id="excel-mdl" title="Excelで編集" @hidden="isFileInput=false">
+        <div class="mb-2">
+          <p><span class="h4">①</span>ファイルを編集</p>
+          <button class="btn btn-info" @click="ExportExcel">Excelファイルをダウンロード</button>
+        </div>
+        <div>
+          <p><span class="h4">②</span>ファイルをアップロード</p>
+          <input type="file" id="file" ref="file" @change="isFileInput=true">
+        </div>
+        <template #modal-footer="{cancel}">
+          <button class="btn btn-secondary" @click="cancel()">cancel</button>
+          <button class="btn btn-primary" v-if="isFileInput" v-b-modal.excel-mdl-2>適用</button>
+        </template>
+      </b-modal>
+
+      <b-modal id="excel-mdl-2" @ok="ImportExcel" title="Excelファイルを適用">
+        <p class="my-2">元のデータを上書きしますか？</p>
+      </b-modal>
   </div>
 </template>
 
@@ -66,6 +83,8 @@
 import api from '../api.js'
 import draggable from 'vuedraggable'
 import "bootstrap-icons/font/bootstrap-icons.css";
+import XLSX from "xlsx"
+
 
 export default {
   components: {
@@ -83,6 +102,7 @@ export default {
       tableID: null,
       delLineIndex: null,
       blankAlert: false,
+      isFileInput: false,
     }
   },
   methods:{
@@ -91,7 +111,6 @@ export default {
       if(data.statusCode == 200){
         this.question_title = data.body.title;
         this.questions = data.body.info.questions;
-        console.log(this.questions);
         return true
       }else{
         return false
@@ -114,7 +133,6 @@ export default {
       this.$bvModal.show("update-mdl");
     },
     ClickedDelLine: function(i){
-      console.log(i,this.questions[i]);
       if(this.questions[i][0]==""&&this.questions[i][1]==""){
         this.DelLine(i);
       }else{
@@ -129,7 +147,6 @@ export default {
         var v1 = this.questions[i][0];
         var v2 = this.questions[i][1];
         if(v1==""&&v2==""){
-          console.log("未入力の行:",i)
           this.questions.splice(i,1);
           i-=1;
         }
@@ -208,7 +225,48 @@ export default {
       }else{
         return {"background-color":"white"};
       }
-    }
+    },
+    ImportExcel: function(){
+      this.$bvModal.hide('excel-mdl');
+      let file = this.$refs.file.files[0];
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var data = e.target.result;
+        data = new Uint8Array(data);
+        var workbook = XLSX.read(data, {
+          type: "array"
+        });
+
+        /* DO SOMETHING WITH workbook HERE */
+        var first_sheet_name = workbook.SheetNames[0];
+        /* Get worksheet */
+        var worksheet = workbook.Sheets[first_sheet_name];
+        //It will prints with header and contents ex) Name, Home...
+        var json = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1
+        });
+
+        _this.questions = [];
+        for(var i=1; i<json.length; i++){
+          json[i].length = 2;
+          if(json[i][0]==undefined)json[i][0]="";
+          if(json[i][1]==undefined)json[i][1]="";
+          _this.questions[i-1] = json[i];
+        }
+      }
+      const _this = this;
+
+      reader.readAsArrayBuffer(file);
+    },
+    ExportExcel: function(){
+      const wb = XLSX.utils.book_new();
+      var data = this.questions.concat();
+      data.unshift(['【問題】','【答え】']);
+      var ws = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb,ws);
+      XLSX.writeFile(wb,this.question_title+'.xlsx')
+    },
   },
   mounted: function(){
     document.addEventListener("keydown", this.onKeyDown);
@@ -265,23 +323,6 @@ export default {
 }
 .table tr{
   line-height: 1rem;
-}
-.top-btn{
-  display:flex;
-  padding-bottom: 1rem;
-}
-.btn-right{
-  margin-left: auto;
-}
-.top-btn .btn {
-  padding-right: 2rem;
-  padding-left: 2rem;
-}
-.bottom-btn{
-  display:flex;
-}
-.bottom-btn button{
-  height: 3rem;
 }
 .ghost{
   opacity: 60%;
