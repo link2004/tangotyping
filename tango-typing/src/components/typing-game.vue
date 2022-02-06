@@ -45,7 +45,7 @@
               <input class="form-check-input" style="margin-top:0.5rem;" v-model="RetryOption_miss" type="checkbox" id="checkbox-missnum">
               <label for="checkbox-missnum">
                 ミス数が
-                <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="0">
+                <input v-model="RetryOption_miss_num" type="number" style="width:40px" min="1">
                 以上
               </label>
             </div>
@@ -70,6 +70,8 @@
 
 <script>
 import api from "../api.js"
+import audio_miss from "@/assets/audio/miss.mp3"
+import audio_type from "@/assets/audio/type.mp3"
 import "bootstrap-icons/font/bootstrap-icons.css"
 
 class question_C {
@@ -114,8 +116,8 @@ export default {
   data() {
     return{
       audio: {
-        miss: new Audio("../audio/miss.mp3"),
-        type: new Audio("../audio/type.mp3"),
+        miss: new Audio(audio_miss),
+        type: new Audio(audio_type),
       },
       scene: null, //{"home","game","result"}
       current_question: "",
