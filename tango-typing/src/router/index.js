@@ -4,6 +4,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path:'/', name:"home",
+    component: () => import('../views/Home.vue'),
+  },
+  {
     path: '/mypage', name:"mypage",
     component: () => import('../views/Mypage.vue'),
     children:[
@@ -32,7 +36,7 @@ const routes = [
     ]
   },
   { 
-    path: '/login', component: () => import('../views/Login.vue'), 
+    path: '/login', name:"login", component: () => import('../views/Login.vue'), 
   },
   {
     path: '/signup', component: () => import('../views/Signup.vue'),
