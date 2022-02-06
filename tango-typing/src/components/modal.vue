@@ -16,9 +16,6 @@
       <router-view/>
     </div>
     <template #modal-footer>
-      <b-button size="sm" variant="secondary" v-if="$route.name=='edit'" @click="Return">
-        戻る
-      </b-button>
       <b-button size="sm" variant="primary" v-if="$route.name=='typing'" @click="Return">
         最初から (Esc)
       </b-button>
@@ -34,7 +31,8 @@ export default {
   data() {
     return {
       title: "",
-      isBtnRestart: false
+      isBtnRestart: false,
+      is_loading_successful: false
     }
   },
   methods: {
@@ -42,12 +40,23 @@ export default {
       this.$router.push({name:'mypage'});
     },
     Return: function(){
-      this.$router.push({name:'start',params:{id:this.$route.params.id}});
+      this.$router.push({
+        name:'start',
+        params:{
+          id:this.$route.params.id,
+          }
+        });
     },
   },
   mounted() {
     var response = api.getQuestions(this.$route.params.id);
-    this.title = response.body.title;
+    if(response.statusCode==200){
+      this.title = response.body.title;
+      this.is_loading_successful = true;
+    }else{
+      this.title = "新規作成";
+    }
+
   },
   
 }

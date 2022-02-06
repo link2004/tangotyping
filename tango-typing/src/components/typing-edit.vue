@@ -2,8 +2,8 @@
   <div class="container flex-col h-100">
       
       <div class="d-flex mb-3">
-        <router-link class="btn btn-secondary px-4" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
-        <button class="btn btn-info ml-2 px-4" v-b-modal.excel-mdl>Excelで編集</button>
+        <router-link class="btn btn-secondary px-4 mr-2" v-if="mode=='update'" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
+        <button class="btn btn-info px-4" v-b-modal.excel-mdl>Excelで編集</button>
         <button class="btn btn-danger ml-auto px-4" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
       </div>
       <div class="input-group mb-3">
@@ -169,7 +169,8 @@ export default {
     Save: function(){
       var response = api.putQuestions(this.token, this.question_title, this.questions);
       if(response.statusCode == 200){
-        this.$router.push({name:'start',params:{id:this.$route.params.id}});
+        this.$router.push({name:'mypage'});
+        this.$router.go(0);
       }
     },
     Update: function(){
@@ -181,7 +182,8 @@ export default {
     Delete: function(){
       var response = api.deleteQuestions(this.token,this.tableID);
       if(response.statusCode == 200){
-        this.$router.replace('/');
+        this.$router.push({name:'mypage'});
+        this.$router.go(0);
       }
     },
     moveFocus: function(move){

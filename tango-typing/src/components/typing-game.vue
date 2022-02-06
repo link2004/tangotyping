@@ -2,7 +2,7 @@
 <div class="h-100 flex-col" :style="panelStyleObj">
   <div v-if="this.scene=='game'" class="game-screen my-auto"  v-cloak>
     <div class="question my-3" style="font-size:2rem;">{{ current_question }}</div>
-    <div class="card-header border-0 typing-area" style="font-size:2rem;">
+    <div class="card-header typing-area" style="font-size:2rem;">
       <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
     </div>
     
@@ -13,30 +13,28 @@
   </div>
   <div v-if="this.scene=='result'" class="card-body" v-cloak>
     <div class="row text-left h-100">
-      <div class="col">
+      <div class="col h-100 overflow-auto">
         <table class="table">
-          <tbody>
-            <tr>
-              <th scope="col" class="p-1">問題</th>
-              <th scope="col" class="p-1 text-center">ミス</th>
-              <th scope="col" class="p-1 text-center">暗記</th>
-            </tr>
-            <tr v-for="(q,key) in this.questions" :key=key>
-              <td class="col-9 p-1">
-                <div style="font-size:.9rem">{{q.japanese}}</div>
-
-
-                
-                <div class="text-success" :class="optionCol(q.miss_count,q.isCorrect)">{{q.english}}</div>
-              </td>
-              <td class="text-center" :class="optionCol(q.miss_count,true)">{{q.miss_count}}</td>
-              <td class="text-center" :class="optionCol(0,q.isCorrect)">
-                <div class="bi bi-circle" v-if="q.isCorrect"></div>
-                <div class="bi bi-x-lg" v-else></div>
-              </td>
-            </tr>
-            <tr><td colspan="3"></td></tr>
-          </tbody>
+            <tbody>
+              <tr>
+                <th scope="col" class="p-1">問題</th>
+                <th scope="col" class="p-1 text-center">ミス</th>
+                <th scope="col" class="p-1 text-center">暗記</th>
+              </tr>
+              <tr v-for="(q,key) in this.questions" :key=key>
+                <td class="col-9 p-1">
+                  <div style="font-size:.9rem">{{q.japanese}}</div>
+                  <div class="text-success" :class="optionCol(q.miss_count,q.isCorrect)">{{q.english}}</div>
+                </td>
+                <td class="text-center" :class="optionCol(q.miss_count,true)">{{q.miss_count}}</td>
+                <td class="text-center" :class="optionCol(0,q.isCorrect)">
+                  <div class="bi bi-circle" v-if="q.isCorrect"></div>
+                  <div class="bi bi-x-lg" v-else></div>
+                </td>
+              </tr>
+              <tr><td colspan="3"></td></tr>
+              
+            </tbody>
         </table>
       </div>
       <div class="col-4">
@@ -112,6 +110,7 @@ class timer_C {
   }
 }
 export default {
+  props:['hintMode'],
   data() {
     return{
       audio: {
@@ -134,7 +133,6 @@ export default {
       word_index_counts: 0,
       time: new timer_C(), // タイマー
       miss_count: 0, // ミス数記録
-      hintMode: false,
       csvMode: false,
       isHint: false,
       panel_col: "",
@@ -332,6 +330,9 @@ export default {
 }
 .typing-area {
   font-variant-ligatures: no-common-ligatures;
+  border:solid rgb(197, 197, 197);
+  border-radius: 1rem;
+  
 }
 .title{
     font-size: 30px;

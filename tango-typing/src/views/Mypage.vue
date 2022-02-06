@@ -12,7 +12,7 @@
         <div class="px-4">
           <div
           class="card mb-2 shadow-sm bg-light"
-          v-for="(question,key) in this.$parent.questions"
+          v-for="(question,key) in this.questions"
           :key=key
           @click="ClickedQuestion(question)">
             <div class="card-body p-2">{{question.title}}</div>
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import api from '../api.js'
+
 export default {
   data() {
     return {
@@ -36,7 +38,7 @@ export default {
   },
   methods:{
     CreateNew: function(){
-      this.$router.push({name:'edit'});
+      this.$router.push({name:'edit',params:{id:"new"}});
     },
     ClickedQuestion: function(item){
       console.log(item);
@@ -47,9 +49,22 @@ export default {
         },
       })
     },
+    queryQuestions: function(userID){
+      //userIDから、問題をクエリ
+      var questions = [];
+      var items = api.queryQuestion(userID).questions;
+      for (var item in items){
+        questions[item] = {
+          "title":items[item].title,
+          "id":items[item].id
+        };
+      }
+      return questions;
+    }
   },
   mounted: function() {
     if(!this.$parent.isLogined)this.$router.push({name:'login'});
+    this.questions = this.queryQuestions(this.$parent.userID);
   },
 }
 </script>

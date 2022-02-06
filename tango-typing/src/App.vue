@@ -54,26 +54,13 @@ export default {
           this.$cookies.set('LoginToken',this.token);
           this.isLogined = true;
           this.userID = response.Item.sub;
-          this.questions = this.queryQuestions(this.userID);
         }
       }
     },
-    queryQuestions: function(userID){
-      //userIDから、問題をクエリ
-      var questions = [];
-      var items = api.queryQuestion(userID).questions;
-      for (var item in items){
-        questions[item] = {
-          "title":items[item].title,
-          "id":items[item].id
-        };
-      }
-      return questions;
-    }
   },
   mounted: function(){
     this.Login();
-  }
+  },
 }
 </script>
 
