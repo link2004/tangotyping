@@ -20,6 +20,7 @@ const routes = [
           {
             path: 'typing/:id', name:"typing",
             component: () => import('../components/typing-game.vue'),
+            props: true,
           },
           {
             path: 'edit/:id', name:"edit",
