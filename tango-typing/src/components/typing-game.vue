@@ -5,10 +5,10 @@
     <div class="card-header typing-area" style="font-size:2rem;">
       <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
     </div>
-    
     <div class="gauge progress mt-4">
       <div class="progress-bar" :style="q_gaugeStyleObj"></div>
     </div>
+    
     <div>{{current_count}}/{{this.questions.length}}</div>
   </div>
   <div v-if="this.scene=='result'" class="card-body" v-cloak>
@@ -98,17 +98,15 @@ class timer_C {
     this.start = 0;
     this.end = 0;
   }
-  get getTime() {
-    // 秒単位で時間を返す
-    return (this.end - this.start) / 1000;
+  setStart(){
+    this.start = Date.now();
   }
-  saveDate(mode) {
-    // 引数が1でタイマースタート、0でストップ
-    if (mode) {
-      this.start = Date.now();
-    } else {
-      this.end = Date.now();
-    }
+  update(){
+    this.end = Date.now();
+  }
+  get getTime(){
+    this.update();
+    return (this.end - this.start) / 1000;
   }
 }
 export default {
@@ -159,7 +157,7 @@ export default {
     },
     startQuestion: function () {
       // タイマースタート
-      this.time.saveDate(1);
+      this.time.setStart();
       // 問題を更新する
       this.current_question = this.questions[this.current_count].japanese;
       this.current_answer = this.questions[this.current_count].english;
@@ -170,8 +168,6 @@ export default {
       this.isHint = this.hintMode;
     },
     nextQuestion: function () {
-      // タイマーストップ
-      this.time.saveDate(0);
       // 時間とミス数の保存
       this.questions[this.current_count].savePlayData(
         this.time.getTime,
@@ -285,6 +281,9 @@ export default {
   },
   //htmlページを開いた直後
   mounted: function () {
+    //タイマーを定期的に更新
+    let self = this;
+    setInterval(function(){self.time.update()},1000)
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
     var file = api.getQuestions(this.$route.params.id);
