@@ -249,7 +249,7 @@ export default {
     onKeyDown: function (event) {
       if(event.key == "Escape")this.scene="start";
       if(this.scene=="start"){
-        this.startGame();
+        if(event.key == "Enter")this.startGame();
       }else if (this.scene == "game") {
         if (this.current_question == this.questions.length)return;
         //スペースキーが押されたら答え表示

@@ -8,6 +8,7 @@
     no-close-on-esc
     no-close-on-backdrop
     hide-footer
+    centered
     header-bg-variant="light"
     @hidden="ClosedModal">
     <template #modal-title>
