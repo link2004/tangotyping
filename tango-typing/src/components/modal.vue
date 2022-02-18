@@ -4,10 +4,12 @@
     :visible="true"
     id="typing-modal"
     size="lg"
-    centered ok-only 
     ok-title="閉じる"
-    button-size="sm"
     no-close-on-esc
+    no-close-on-backdrop
+    hide-footer
+    centered
+    header-bg-variant="light"
     @hidden="ClosedModal">
     <template #modal-title>
       <h2>{{title}}</h2>
@@ -15,11 +17,6 @@
     <div style="height:30rem">
       <router-view/>
     </div>
-    <template #modal-footer>
-      <b-button size="sm" variant="primary" v-if="$route.name=='typing'" @click="Return">
-        最初から (Esc)
-      </b-button>
-    </template>
     </b-modal>
   </div>
 </template>
@@ -37,15 +34,7 @@ export default {
   },
   methods: {
     ClosedModal: function () {
-      this.$router.push({name:'mypage'});
-    },
-    Return: function(){
-      this.$router.push({
-        name:'start',
-        params:{
-          id:this.$route.params.id,
-          }
-        });
+      this.$router.push({path:"../../"});
     },
   },
   mounted() {

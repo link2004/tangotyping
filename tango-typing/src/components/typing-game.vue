@@ -1,15 +1,28 @@
 <template>
-<div class="h-100 flex-col" :style="panelStyleObj">
-  <div v-if="this.scene=='game'" class="game-screen my-auto"  v-cloak>
-    <div class="question my-3" style="font-size:2rem;">{{ current_question }}</div>
-    <div class="card-header typing-area" style="font-size:2rem;">
-      <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
+<div class="h-100 flex-col text-center" :style="panelStyleObj">
+  <div v-if="this.scene=='start'" class="my-auto" v-cloak>
+    <div class="mx-auto" style="width:60%;">
+      <div class="btn btn-primary btn-block mb-2" @click="startGame" style="font-size:2rem;">スタート(Enter)</div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="hintMode">
+        <label class="custom-control-label" for="customSwitch1">答え表示モード</label>
+      </div>
     </div>
-    <div class="gauge progress mt-4">
-      <div class="progress-bar" :style="q_gaugeStyleObj"></div>
-    </div>
-    
-    <div>{{current_count}}/{{this.questions.length}}</div>
+  </div>
+  <div v-if="this.scene=='game'" class="game-screen flex-col h-100"  v-cloak>
+      <div class="my-auto">
+        <div class="question my-3" style="font-size:2rem;">{{ current_question }}</div>
+        <div class="card-header typing-area" style="font-size:2rem;">
+          <span>{{input_string}}</span><span :style="hintStrStyleObj" id="hint-str">{{hint_string}}</span>
+        </div>
+        <div class="gauge progress mt-4">
+          <div class="progress-bar" :style="q_gaugeStyleObj"></div>
+        </div>
+        <div>{{current_count}}/{{this.questions.length}}</div>
+      </div>
+      <div class="text-secondary border p-1" style="font-size:1rem">
+        <span class="mr-5">スペースキー : 答え表示</span><span>Esc : やり直し</span>
+      </div>
   </div>
   <div v-if="this.scene=='result'" class="card-body" v-cloak>
     <div class="row text-left h-100">
@@ -56,8 +69,9 @@
               </label>
             </div>
             <div class="text-center mt-auto">
-              <p class="text-secondary mb-0" style="font-size:16px">赤文字の問題が対象</p>
-              <button class="btn btn-danger btn-block btn-lg" @click="startGame">復習 (Enter)</button>
+              <p class="text-secondary mb-0" style="font-size:16px">赤色の問題のみ</p>
+              <button class="btn btn-danger btn-block btn-lg" @click="Retry">復習 (Enter)</button>
+              <button class="btn btn-primary btn-block btn-lg" @click="RetryAll">はじめから</button>
             </div>
           </div>
         </div>
@@ -110,14 +124,13 @@ class timer_C {
   }
 }
 export default {
-  props:['hintMode'],
   data() {
     return{
       audio: {
         miss: new Audio(audio_miss),
         type: new Audio(audio_type),
       },
-      scene: null, //{"home","game","result"}
+      scene: "start", //{"start","game","result"}
       current_question: "",
       current_answer: "",
       current_count: 0,
@@ -135,6 +148,7 @@ export default {
       miss_count: 0, // ミス数記録
       csvMode: false,
       isHint: false,
+      hintMode: false,
       panel_col: "",
       RetryOption_miss: true,
       RetryOption_anki: true,
@@ -144,9 +158,6 @@ export default {
   methods:{
     startGame: function () {
       this.current_count = 0;
-
-      //復習条件を満たしている問題を選択
-      this.selectRetryQuestions();
 
       //もし問題がなくなったら問題を初期化
       if (this.questions.length == 0) this.initQuestions();
@@ -183,9 +194,6 @@ export default {
         this.startQuestion();
       }
       
-    },
-    returnHome: function(){
-      this.$router.push({name:'start',props:{id:this.$route.params.id}})
     },
     initQuestions: function(){
       //問題をはじめからにする
@@ -224,15 +232,25 @@ export default {
       }
       this.questions = selectedQuestions;
     },
+    Retry: function(){
+      //条件を満たした問題のみリトライ
+      this.selectRetryQuestions();
+      this.scene="start";
+    },
+    RetryAll: function(){
+      //全ての問題をリトライ
+      this.scene="start";
+    },
     playSound: function (sound) {
       //音声再生
       sound.currentTime = 0; //連続して音を鳴らせるようにする
       sound.play(); //再生
     },
     onKeyDown: function (event) {
-      if(this.$route.name != 'typing')return;
-      if (event.key == "Escape")this.returnHome();
-      if (this.scene == "game") {
+      if(event.key == "Escape")this.scene="start";
+      if(this.scene=="start"){
+        if(event.key == "Enter")this.startGame();
+      }else if (this.scene == "game") {
         if (this.current_question == this.questions.length)return;
         //スペースキーが押されたら答え表示
         if (event.key == " "){
@@ -261,8 +279,8 @@ export default {
             this.panelBlick();
           }
         } 
-      }else{
-        if(event.key == "Enter")this.startGame();
+      }else if(this.scene=="result"){
+        if(event.key == "Enter")this.Retry();
       }
     },
     LoadQuestions: function(file){
@@ -286,10 +304,10 @@ export default {
     setInterval(function(){self.time.update()},1000)
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
+    console.log("addeventlistener keydown");
     var file = api.getQuestions(this.$route.params.id);
     this.questions_title = file.body.title;
     this.LoadQuestions(file.body.info.questions)
-    this.startGame();
   },
   computed: {
     q_gaugeStyleObj: function () {
