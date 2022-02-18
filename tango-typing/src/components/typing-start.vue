@@ -10,16 +10,8 @@
           <button
           class="btn btn-primary btn-block mb-2"
           style="font-size:2rem;"
-          @click="$router.push({name:'typing',params:{id:$route.params.id}})">
+          @click="$router.push({path:`../typing/${$route.params.id}`})">
             スタート (Enter)
-          </button>
-        </div>
-        <div>
-          <button
-          class="btn btn-info btn-block mb-3"
-          style="font-size:1.4rem;"
-          @click="$router.push({name:'typing',params:{id:$route.params.id,hintMode:true}})">
-            答え表示モード
           </button>
         </div>
         <div>

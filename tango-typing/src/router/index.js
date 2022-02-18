@@ -6,6 +6,25 @@ const routes = [
   {
     path:'/', name:"home",
     component: () => import('../views/Home.vue'),
+    children:[
+      {
+        path:'m',
+        component: () => import('../components/modal.vue'),
+        props:true,
+        children:[
+          {
+            path:'start/:id',
+            component: () => import('../components/typing-start.vue'),
+            props: true,
+          },
+          {
+            path: 'typing/:id',
+            component: () => import('../components/typing-game.vue'),
+            props: true,
+          },
+        ]
+      }
+    ]
   },
   {
     path: '/mypage', name:"mypage",
