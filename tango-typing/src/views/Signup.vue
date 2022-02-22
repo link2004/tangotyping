@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center mt-5">
+  <div class="container text-center" style="padding: 16rem 0rem;">
     <div class="card mx-auto shadow input-form">
       <div class="card-body">
         <h5 class="card-title">サインアップ</h5>
@@ -16,8 +16,9 @@
           <div v-show="isLoading">Loading...</div>
           <div v-show="!isLoading">サインアップ</div>
         </button>
+        <small>登録する際、<router-link to="/terms" class="link-primary">利用規約</router-link>に同意したとみなします。</small>
         <div>or</div>
-        <router-link to="/login"  class="text-primary">ログイン</router-link>
+        <router-link to="/login"  class="link-primary">ログイン</router-link>
       </div>
       
     </div>
