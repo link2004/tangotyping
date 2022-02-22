@@ -1,7 +1,7 @@
 <template>
   <div class="text-left">
     <div class="py-5 text-center">
-      <strong style="font-size:8rem">TangoTyping</strong>
+      <strong style="font-size:9vw">TangoTyping</strong>
       <h2>単語帳タイピング</h2>
     </div>
 
