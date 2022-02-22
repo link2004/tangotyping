@@ -33,7 +33,8 @@
     <footer>
       <b-navbar toggleable="lg" class="border-top">
         <b-navbar-nav class="ml-auto">
-          <b-nav-item to="/privacy-policy">プライバシーポリシー</b-nav-item>
+          <b-nav-item to="/terms">利用規約</b-nav-item>
+          <b-nav-item to="/policy">プライバシーポリシー</b-nav-item>
         </b-navbar-nav>
       </b-navbar>
     </footer>
