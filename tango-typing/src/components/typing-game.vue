@@ -243,7 +243,7 @@ export default {
     },
     playSound: function (sound) {
       //音声再生
-      // sound.currentTime = 0; //連続して音を鳴らせるようにする
+      sound.currentTime = 0; //連続して音を鳴らせるようにする
       // sound.play(); //再生
     },
     onKeyDown: function (event) {
