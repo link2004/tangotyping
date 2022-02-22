@@ -1,5 +1,5 @@
 <template>
-<div class="text-center mt-5">
+<div class="text-center py-5">
   <div v-show="!this.$parent.isLogined" v-cloak>
   </div>
 
@@ -8,7 +8,7 @@
     <div @click="CreateNew" class="btn-primary new-btn mb-3" style="font-size:1.3rem">新規作成</div>
     <div class="card shadow-sm mb-2">
       <div class="card-header p-2 bg-info text-white" style="font-size:1.3rem">マイ単語帳</div>
-      <div class="card-body list-body" style="font-size:1.4rem;font-weight:bold;">
+      <div class="card-body list-body" style="font-size:1.4rem;font-weight:bold; height:40rem;">
         <div class="px-4">
           <div
           class="card mb-2 shadow-sm bg-light"

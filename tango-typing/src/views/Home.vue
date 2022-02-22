@@ -1,6 +1,6 @@
 <template>
   <div class="text-left">
-    <div class="my-5 text-center">
+    <div class="py-5 text-center">
       <strong style="font-size:8rem">TangoTyping</strong>
       <h2>単語帳タイピング</h2>
     </div>
@@ -20,7 +20,7 @@
       </div>
     </div> -->
     
-    <div class="mb-5">
+    <div style="padding-bottom:10rem;">
       <h2 class="text-left border-bottom mb-4">サンプル</h2>
       <div class="btn btn-info btn-block block-element" @click=ClickedQuestion>Fruit</div>
     </div>
