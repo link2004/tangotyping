@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center mt-5">
+  <div class="container text-center" style="padding: 16rem 0rem;">
     <div class="card mx-auto shadow input-form">
       <div class="card-body">
         <h5 class="card-title">ログイン</h5>
