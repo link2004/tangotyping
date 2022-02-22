@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <b-navbar toggleable="lg" type="light" variant="light" class="border-bottom shadow-sm">
+      <b-navbar toggleable="lg"  class="border-bottom">
         <b-navbar-brand to="/">TangoTyping</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -23,10 +23,20 @@
       </b-navbar>
     </header>
     
-    <div class="container">
-      <router-view/>
+    <div class="main">
+      <div class="container">
+        <router-view/>
+      </div>
     </div>
     
+
+    <footer>
+      <b-navbar toggleable="lg" class="border-top">
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item to="/privacy-policy">プライバシーポリシー</b-nav-item>
+        </b-navbar-nav>
+      </b-navbar>
+    </footer>
   </div>
 </template>
 
@@ -88,7 +98,12 @@ export default {
 .form-control{
   margin-bottom:1rem;
 }
+
+.main{
+  background-color:rgb(243, 243, 243);
+}
 nav{
   padding:20px
 }
+
 </style>
