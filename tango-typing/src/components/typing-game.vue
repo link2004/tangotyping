@@ -243,8 +243,8 @@ export default {
     },
     playSound: function (sound) {
       //音声再生
-      sound.currentTime = 0; //連続して音を鳴らせるようにする
-      sound.play(); //再生
+      // sound.currentTime = 0; //連続して音を鳴らせるようにする
+      // sound.play(); //再生
     },
     onKeyDown: function (event) {
       if(event.key == "Escape")this.scene="start";
