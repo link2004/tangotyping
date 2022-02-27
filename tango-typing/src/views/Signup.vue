@@ -6,6 +6,8 @@
         <div class="text-left">
           <label for="user-id">ユーザー名</label>
           <input type="text" class="form-control" id="user-id" v-model="input_userID">
+          <label for="email">メール</label>
+          <input type="email" class="form-control" id="email" v-model="input_email">
           <label for="pass">パスワード</label>
           <input type="password" class="form-control" id="pass" v-model="input_pass">
           <label for="pass2">パスワード（確認）</label>
@@ -24,14 +26,16 @@
   </div>
 </template>
 <script>
-import api from '../api.js'
+//import api from '../api.js'
+import cognito from '../cognito.js'
+
 export default {
   data() {
     return {
       input_userID:"",
+      input_email:"",
       input_pass:"",
       input_pass2:"",
-      token:"",
       msg_list: [],
       isLoading: false,
     }
@@ -50,23 +54,19 @@ export default {
         this.signup();
       }
     },
-    signup: function(){
-      
-      this.isLoading = true;
-      var response = api.signup(this.input_userID,this.input_pass);
-      console.log(response);
-      if(response.statusCode == 200){
-        response = api.login(this.input_userID,this.input_pass);
-        if(response.statusCode == 200){
-          this.$cookies.set('LoginToken',response.Item.token);
-          this.$parent.Login();
-          this.$router.push({name:'mypage'});
-        }
-      }else{
-        this.msg_list.push("そのユーザーIDは既に存在しています");
+    signup: async function(){
+      var email = this.input_email;
+      var userID = this.input_userID;
+      var pass = this.input_pass;
+      var result = await cognito.signUp(email,userID,pass);
+      if(result){
+        console.log("activation");
+        this.$router.push({
+          path:'/activation',
+          query:{email:email}
+        })
       }
-      this.isLoading = false;
-    }
+    },
   }
 }
 </script>

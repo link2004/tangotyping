@@ -61,6 +61,9 @@ const routes = [
     path: '/signup', component: () => import('../views/Signup.vue'),
   },
   {
+    path: '/activation', props:true, component: () => import('../views/Activation.vue'),
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

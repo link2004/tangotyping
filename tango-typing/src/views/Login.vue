@@ -4,8 +4,8 @@
       <div class="card-body">
         <h5 class="card-title">ログイン</h5>
         <div class="text-left">
-          <label for="user-id">ユーザー名</label>
-          <input type="text" class="form-control" id="user-id" v-model="input_userID">
+          <label for="user-id">メールアドレス</label>
+          <input type="email" class="form-control" id="user-id" v-model="input_userID">
           <label for="pass">パスワード</label>
           <input type="password" class="form-control" id="pass" v-model="input_pass">
         </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import api from '../api.js'
+import cognito from '../cognito.js'
 export default {
   data() {
     return {
@@ -37,24 +37,20 @@ export default {
   methods: {
     Clicked_login: function(){
       this.msg_list = [];
-      if (this.input_userID=="")this.msg_list.push("ユーザーIDを入力してください");
-      if (this.input_pass=="")this.msg_list.push("パスワードを入力してください");
-      if (this.input_userID!="" && this.input_pass!=""){
+      if (!this.input_userID)this.msg_list.push("ユーザーIDを入力してください");
+      if (!this.input_pass)this.msg_list.push("パスワードを入力してください");
+      
+      if(this.input_userID || this.input_pass){
         this.login();
       }
 
     },
-    login: function(){
-      this.isLoading;
-      var response = api.login(this.input_userID,this.input_pass);
-      if(response.statusCode == 200){
-        this.$cookies.set('LoginToken',response.Item.token);
-        this.$parent.Login();
-        this.$router.push({name:'mypage'});
-      }else{
-        this.msg_list.push("パスワードまたはユーザー名が違います");
+    login: async function(){
+      var result = await cognito.signIn(this.input_userID, this.input_pass);
+      if(result){
+        // this.$router.push({name:'mypage'});
+        console.log("login success!");
       }
-      this.isLoading = false;
     }
   }
 }

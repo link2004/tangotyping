@@ -50,10 +50,12 @@ export default {
       this.token = this.$cookies.get('LoginToken');
       if(this.token!="null"){
         var response = api.verification_token(this.token);
-        if(response.isSuccess){
-          this.$cookies.set('LoginToken',this.token);
-          this.isLogined = true;
-          this.userID = response.Item.sub;
+        if(response){
+          if(response.isSuccess){
+            this.$cookies.set('LoginToken',this.token);
+            this.isLogined = true;
+            this.userID = response.Item.sub;
+          }
         }
       }
     },
