@@ -1,6 +1,7 @@
 <template>
 <div class="text-center py-5">
   <div>
+
     <div @click="CreateNew" class="btn-primary new-btn mb-3" style="font-size:1.3rem">新規作成</div>
     <div class="card shadow-sm mb-2">
       <div class="card-header p-2 bg-info text-white" style="font-size:1.3rem">マイ単語帳</div>

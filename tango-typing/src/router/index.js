@@ -68,6 +68,12 @@ const routes = [
     path: '/confirm', name:"confirm", component: () => import('../views/Confirm.vue'),
   },
   {
+    path: '/reset', name:"reset", component: () => import('../views/reset.vue'),
+  },
+  {
+    path: '/forgot', name:"forgot", component: () => import('../views/forgot.vue'),
+  },
+  {
     path: '/policy',
     name: 'policy',
     component: () => import('../views/policy.vue')

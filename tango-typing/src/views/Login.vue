@@ -9,7 +9,7 @@
           <label for="pass">パスワード</label>
           <input type="password" class="form-control" id="pass" v-model="input_pass">
         </div>
-        <router-link to="/reset" class="text-secondary">パスワードを忘れましたか？</router-link>
+        <router-link to="/forgot" class="text-secondary">パスワードを忘れましたか？</router-link>
         <div v-for="(msg,key) in msg_list" class="text-danger" :key="key">{{msg}}</div>
         <button @click="Clicked_login" class="btn btn-primary btn-block" :disabled="isLoading">
           <div v-show="isLoading">Loading...</div>
@@ -55,7 +55,7 @@ export default {
   methods:{
     Clicked_login: function(){
       this.msg_list = [];
-      if (this.input_userID=="")this.msg_list.push("ユーザーIDを入力してください");
+      if (this.input_userID=="")this.msg_list.push("メールアドレスを入力してください");
       if (this.input_pass=="")this.msg_list.push("パスワードを入力してください");
       if (this.input_userID!="" && this.input_pass!=""){
         this.login();
@@ -73,7 +73,7 @@ export default {
     }
   },
   mounted: function() {
-    this.input_userID = this.$route.query.email;
+    if(this.$route.query.email)this.input_userID = this.$route.query.email;
   },
 }
 </script>

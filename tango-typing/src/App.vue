@@ -3,10 +3,13 @@
     <header>
       <b-navbar toggleable="lg"  class="border-bottom">
         <b-navbar-brand to="/">TangoTyping</b-navbar-brand>
-
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-        <b-collapse id="nav-collapse" is-nav>    
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav>
+            <b-nav-item to="/">ホーム</b-nav-item>
+            <b-nav-item to="/mypage">マイ単語帳</b-nav-item>
+            </b-navbar-nav> 
           <b-navbar-nav class="ml-auto" v-if="!user">
             <b-nav-item to="login" class="my-auto">ログイン</b-nav-item>
             <b-nav-item>
@@ -15,7 +18,6 @@
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto" v-if="user">
             <b-nav-item-dropdown :text="user.attributes.name" right>
-              <b-dropdown-item href="#" to="/mypage">マイページ</b-dropdown-item>
               <b-dropdown-item href="#" @click="signOut">サインアウト</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>  
@@ -89,6 +91,11 @@ export default {
 }
 nav{
   padding:20px
+}
+
+footer {
+  width: 100%;
+  margin-top:auto;
 }
 
 </style>
