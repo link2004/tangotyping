@@ -27,7 +27,7 @@ import api from "../api.js"
 export default {
   data() {
     return {
-      title: "読み込み中...",
+      title: "",
       isBtnRestart: false,
       is_loading_successful: false
     }
@@ -42,11 +42,10 @@ export default {
     const tableIDisExist = response.statusCode == 200;
     //tableIDが存在するか判定
     if(tableIDisExist){
+      this.title = response.body.title;
+      this.is_loading_successful = true;
       //本人確認
-      if(response.body.userID == this.email){
-        this.title = response.body.title;
-        this.is_loading_successful = true;
-      }else{
+      if(response.body.userID != this.email){
         this.$router.push({path:`/m/typing/${this.$route.params.id}`});
       }
       

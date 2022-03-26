@@ -16,7 +16,7 @@
           <b-navbar-nav class="ml-auto" v-if="user">
             <b-nav-item-dropdown :text="user.attributes.name" right>
               <b-dropdown-item href="#" to="/mypage">マイページ</b-dropdown-item>
-              <amplify-sign-out></amplify-sign-out>
+              <b-dropdown-item href="#" @click="signOut">サインアウト</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>  
         </b-collapse>
@@ -43,8 +43,14 @@
 
 <script>
 import store from './store'
-
+import { Auth } from 'aws-amplify'
 export default {
+  methods: {
+    signOut: async function(){
+      await Auth.signOut();
+      this.$router.push({name:"login"});
+    }
+  },
   computed: {
     user () {
       return store.state.user

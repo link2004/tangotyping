@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from "@/store/index.js"
 import Auth from "@aws-amplify/auth"
-import {AuthState, onAuthUIStateChange} from "@aws-amplify/ui-components"
 
 Vue.use(VueRouter)
 
@@ -66,6 +65,9 @@ const routes = [
     path: '/signup', component: () => import('../views/Signup.vue'),
   },
   {
+    path: '/confirm', name:"confirm", component: () => import('../views/Confirm.vue'),
+  },
+  {
     path: '/policy',
     name: 'policy',
     component: () => import('../views/policy.vue')
@@ -122,15 +124,15 @@ router.beforeResolve(async (to, from, next) => {
   return next();
 });
 
-onAuthUIStateChange((authState, authData) => {
-  //サインインしたら
-  if (authState === AuthState.SignedIn && authData) {
-    router.push({name: "home"});//homeへ移動
-  }
-  //サインアウトされたら
-  if(authState === AuthState.SignedOut) {
-    router.push({ name: "login"});//login画面へ移動
-  }
-});
+// onAuthUIStateChange((authState, authData) => {
+//   //サインインしたら
+//   if (authState === AuthState.SignedIn && authData) {
+//     router.push({name: "home"});//homeへ移動
+//   }
+//   //サインアウトされたら
+//   if(authState === AuthState.SignedOut) {
+//     router.push({ name: "login"});//login画面へ移動
+//   }
+// });
 
 export default router

@@ -71,7 +71,7 @@
             <div class="text-center mt-auto">
               <p class="text-secondary mb-0" style="font-size:16px">赤色の問題のみ</p>
               <button class="btn btn-danger btn-block btn-lg" @click="Retry">復習 (Enter)</button>
-              <button class="btn btn-primary btn-block btn-lg" @click="RetryAll">はじめから</button>
+              <button class="btn btn-primary btn-block btn-lg" @click="RetryAll">はじめから (Esc)</button>
             </div>
           </div>
         </div>
