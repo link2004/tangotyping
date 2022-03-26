@@ -1,0 +1,21 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-tangotyping-dev-120311-authRole",
+      "UnauthRoleArn": "arn:aws:iam::301142268797:role/amplify-tangotyping-dev-120311-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::301142268797:role/amplify-tangotyping-dev-120311-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-tangotyping-dev-120311-deployment",
+      "UnauthRoleName": "amplify-tangotyping-dev-120311-unauthRole",
+      "StackName": "amplify-tangotyping-dev-120311",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:301142268797:stack/amplify-tangotyping-dev-120311/1da619f0-abe8-11ec-9ed7-06331691a9c7",
+      "AmplifyAppId": "djleioexvstek"
+    },
+    "categories": {
+      "auth": {
+        "tangotyping29c47c64": {},
+        "tangotyping": {}
+      }
+    }
+  }
+}

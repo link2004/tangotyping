@@ -6,9 +6,14 @@
     </div>
 
     <div
-    class="btn btn-outline-primary btn-block block-element mx-auto mb-5 shadow"
-    style="width:100%"
-    @click="CreateNew">単語帳を作成</div>
+      class="btn btn-info btn-block block-element mx-auto mb-3 shadow"
+      style="width:100%"
+      @click="$router.push({name:'mypage'})">マイ単語帳</div>
+    <div
+      class="btn btn-outline-primary btn-block block-element mx-auto mb-5 shadow"
+      style="width:100%"
+      @click="CreateNew">単語帳を作成</div>
+    
 
     <!-- <div class="card mb-5 shadow">
       <div class="card-header"><h3>単語帳IDからプレイ</h3></div>
@@ -50,6 +55,9 @@ export default {
         path:`m/typing/${this.inputQuestionID}`,
       })
     }
+  },
+  computed:{
+    user() {return this.$store.state.user}
   }
 }
 </script>

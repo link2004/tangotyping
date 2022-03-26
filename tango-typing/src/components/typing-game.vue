@@ -298,14 +298,14 @@ export default {
     }
   },
   //htmlページを開いた直後
-  mounted: function () {
+  mounted: async function () {
     //タイマーを定期的に更新
     let self = this;
     setInterval(function(){self.time.update()},1000)
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
     console.log("addeventlistener keydown");
-    var file = api.getQuestions(this.$route.params.id);
+    var file = await api.getQuestions(this.$route.params.id);
     this.questions_title = file.body.title;
     this.LoadQuestions(file.body.info.questions)
   },

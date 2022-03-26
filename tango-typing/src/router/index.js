@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from "@/store/index.js"
+import Auth from "@aws-amplify/auth"
+import {AuthState, onAuthUIStateChange} from "@aws-amplify/ui-components"
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -28,6 +32,7 @@ const routes = [
   },
   {
     path: '/mypage', name:"mypage",
+    meta: { requireAuth: true },
     component: () => import('../views/Mypage.vue'),
     children:[
       {
@@ -77,5 +82,55 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+
+// ・現在ユーザーが認証済みであればそのユーザー情報をuserステートに保存
+// ・未認証であればuserステートを空にする
+function getAuthenticatedUser() {
+  return Auth.currentAuthenticatedUser()
+    .then((data) => {
+      if (data && data.signInUserSession) {
+        store.commit("setUser", data);
+        return data;
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+      store.commit("setUser", null);
+      return null;
+    });
+}
+
+// 画面遷移するたびに実行される処理
+// 画面遷移のたび getAuthenticatedUser() を呼び出して、
+// userステートの状態を更新
+
+let user;
+
+router.beforeResolve(async (to, from, next) => {
+  user = await getAuthenticatedUser();
+  
+  //ログイン状態でログイン画面だったら
+  if(to.name === "login" && user) {
+    return next({name: "home"});//homeへ移動
+  }
+
+  //ログイン状態が必須のページだったら
+  if (to.matched.some((record) => record.meta.requireAuth) && !user) {
+    return next({name: "login"});//login画面へ移動
+  }
+  return next();
+});
+
+onAuthUIStateChange((authState, authData) => {
+  //サインインしたら
+  if (authState === AuthState.SignedIn && authData) {
+    router.push({name: "home"});//homeへ移動
+  }
+  //サインアウトされたら
+  if(authState === AuthState.SignedOut) {
+    router.push({ name: "login"});//login画面へ移動
+  }
+});
 
 export default router

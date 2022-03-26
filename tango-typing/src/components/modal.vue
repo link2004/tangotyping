@@ -27,7 +27,7 @@ import api from "../api.js"
 export default {
   data() {
     return {
-      title: "",
+      title: "読み込み中...",
       isBtnRestart: false,
       is_loading_successful: false
     }
@@ -37,16 +37,29 @@ export default {
       this.$router.push({path:"../../"});
     },
   },
-  mounted() {
-    var response = api.getQuestions(this.$route.params.id);
-    if(response.statusCode==200){
-      this.title = response.body.title;
-      this.is_loading_successful = true;
+  mounted: async function(){
+    var response = await api.getQuestions(this.$route.params.id);
+    const tableIDisExist = response.statusCode == 200;
+    //tableIDが存在するか判定
+    if(tableIDisExist){
+      //本人確認
+      if(response.body.userID == this.email){
+        this.title = response.body.title;
+        this.is_loading_successful = true;
+      }else{
+        this.$router.push({path:`/m/typing/${this.$route.params.id}`});
+      }
+      
     }else{
       this.title = "新規作成";
     }
 
   },
+  computed:{
+    email () {
+      return this.$store.state.user.attributes.email
+    }
+  }
   
 }
 </script>
