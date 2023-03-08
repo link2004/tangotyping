@@ -71,7 +71,7 @@
             <div class="text-center mt-auto">
               <p class="text-secondary mb-0" style="font-size:16px">赤色の問題のみ</p>
               <button class="btn btn-danger btn-block btn-lg" @click="Retry">復習 (Enter)</button>
-              <button class="btn btn-primary btn-block btn-lg" @click="RetryAll">はじめから</button>
+              <button class="btn btn-primary btn-block btn-lg" @click="RetryAll">はじめから (Esc)</button>
             </div>
           </div>
         </div>
@@ -298,14 +298,14 @@ export default {
     }
   },
   //htmlページを開いた直後
-  mounted: function () {
+  mounted: async function () {
     //タイマーを定期的に更新
     let self = this;
     setInterval(function(){self.time.update()},1000)
     //キーが押されたときのイベントを使えるようにする
     document.addEventListener("keydown", this.onKeyDown);
     console.log("addeventlistener keydown");
-    var file = api.getQuestions(this.$route.params.id);
+    var file = await api.getQuestions(this.$route.params.id);
     this.questions_title = file.body.title;
     this.LoadQuestions(file.body.info.questions)
   },

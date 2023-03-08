@@ -1,99 +1,179 @@
 <template>
   <div class="container flex-col h-100">
-      
-      <div class="d-flex mb-3">
-        <router-link class="btn btn-secondary px-4 mr-2" v-if="mode=='update'" :to="{name:'start',params:{id:this.$route.params.id}}">戻る</router-link>
-        <button class="btn btn-info px-4" v-b-modal.excel-mdl>Excelで編集</button>
-        <button class="btn btn-danger ml-auto px-4" v-b-modal.delete-mdl v-if="mode=='update'">削除</button>
+    <div class="d-flex mb-3">
+      <router-link
+        class="btn btn-secondary px-4 mr-2"
+        v-if="mode == 'update'"
+        :to="{ name: 'start', params: { id: this.$route.params.id } }"
+        >戻る</router-link
+      >
+      <button class="btn btn-info px-4" v-b-modal.excel-mdl>Excelで編集</button>
+      <button
+        class="btn btn-danger ml-auto px-4"
+        v-b-modal.delete-mdl
+        v-if="mode == 'update'"
+      >
+        削除
+      </button>
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">タイトル</span>
       </div>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">タイトル</span>
-        </div>
-        <input type="text" class="form-control" v-model="question_title">
+      <input type="text" class="form-control" v-model="question_title" />
+    </div>
+    <div class="scroll">
+      <table class="table table-bordered edit-table" id="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">問題(日本語)</th>
+            <th scope="col">答え(英語)</th>
+          </tr>
+        </thead>
+        <draggable
+          v-model="questions"
+          tag="tbody"
+          :options="{ handle: '.handle', animation: 300 }"
+          ghost-class="ghost"
+        >
+          <tr
+            v-for="(question, key) in this.questions"
+            :key="key"
+            valign="middle"
+          >
+            <th scope="row">{{ key + 1 }}</th>
+            <td>
+              <input
+                type="text"
+                ref="input"
+                v-model="questions[key][0]"
+                :style="Find_blank(key, 0)"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                ref="input"
+                v-model="questions[key][1]"
+                :style="Find_blank(key, 1)"
+              />
+            </td>
+            <td
+              class="bi bi-trash-fill btn-light"
+              style="line-height: 2.5rem"
+              @click="ClickedDelLine(key)"
+            ></td>
+            <td class="handle bi bi-list" style="line-height: 2.5rem"></td>
+          </tr>
+        </draggable>
+      </table>
+      <button class="btn btn-outline-secondary btn-block mb-3" @click="AddLine">
+        行を追加
+      </button>
+    </div>
+
+    <b-alert class="mb-3" variant="danger" :show="blankAlert"
+      >空白を含む行があります</b-alert
+    >
+    <div class="bottom-btn">
+      <button
+        class="btn btn-primary btn-block"
+        @click="ClickedSaveBtn"
+        v-if="mode == 'new'"
+      >
+        保存
+      </button>
+      <button
+        class="btn btn-primary btn-block"
+        @click="ClickedUpdateBtn"
+        v-if="mode == 'update'"
+      >
+        更新
+      </button>
+    </div>
+
+    <b-modal
+      id="del-line"
+      @ok="DelLine(delLineIndex)"
+      hide-header
+      ok-title="削除"
+    >
+      <p class="my-2">行を削除しますか？</p>
+    </b-modal>
+
+    <b-modal
+      id="update-mdl"
+      @ok="Update"
+      ok-title="更新"
+      :title="question_title + 'を更新'"
+    >
+      <p class="my-2">問題を更新しますか？</p>
+    </b-modal>
+
+    <b-modal
+      id="save-mdl"
+      @ok="Save"
+      ok-title="保存"
+      :title="question_title + 'を保存'"
+    >
+      <p class="my-2">問題を保存しますか？</p>
+    </b-modal>
+
+    <b-modal
+      id="delete-mdl"
+      @ok="Delete"
+      ok-title="削除"
+      ok-variant="danger"
+      :title="question_title + 'を削除'"
+    >
+      <p class="my-2">本当に削除しますか？</p>
+    </b-modal>
+
+    <b-modal id="excel-mdl" title="Excelで編集" @hidden="isFileInput = false">
+      <div class="mb-2">
+        <p><span class="h4">①</span>ファイルを編集</p>
+        <button class="btn btn-info" @click="ExportExcel">
+          Excelファイルをダウンロード
+        </button>
       </div>
-      <div class="scroll">
-        <table class="table table-bordered edit-table" id="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">問題(日本語)</th>
-              <th scope="col">答え(英語)</th>
-            </tr>
-          </thead>
-          <draggable v-model="questions" tag="tbody" :options="{handle:'.handle',animation:300}" ghost-class="ghost">
-            <tr v-for="(question,key) in this.questions" :key=key valign="middle">
-              <th scope="row">{{key+1}}</th>
-              <td><input type="text" ref="input" v-model="questions[key][0]" :style="Find_blank(key,0)"></td>
-              <td><input type="text" ref="input" v-model="questions[key][1]" :style="Find_blank(key,1)"></td>
-              <td class="bi bi-trash-fill btn-light" style="line-height:2.5rem;" @click="ClickedDelLine(key)"></td>
-              <td class="handle bi bi-list" style="line-height:2.5rem;"></td>
-            </tr>
-          </draggable>
-          
-          
-        </table>
-       <button class="btn btn-outline-secondary btn-block mb-3" @click="AddLine">行を追加</button>
+      <div>
+        <p><span class="h4">②</span>ファイルをアップロード</p>
+        <input type="file" id="file" ref="file" @change="isFileInput = true" />
       </div>
-      
-      <b-alert class="mb-3" variant="danger" :show="blankAlert">空白を含む行があります</b-alert>
-      <div class="bottom-btn">
-      <button class="btn btn-primary btn-block" @click="ClickedSaveBtn" v-if="mode=='new'">保存</button>
-      <button class="btn btn-primary btn-block" @click="ClickedUpdateBtn" v-if="mode=='update'">更新</button>
-      </div>
-      
-      <b-modal id="del-line" @ok="DelLine(delLineIndex)" hide-header ok-title="削除">
-        <p class="my-2">行を削除しますか？</p>
-      </b-modal>
+      <template #modal-footer="{ cancel }">
+        <button class="btn btn-secondary" @click="cancel()">cancel</button>
+        <button
+          class="btn btn-primary"
+          v-if="isFileInput"
+          v-b-modal.excel-mdl-2
+        >
+          適用
+        </button>
+      </template>
+    </b-modal>
 
-      <b-modal id="update-mdl" @ok="Update" ok-title="更新" :title="question_title+'を更新'">
-        <p class="my-2">問題を更新しますか？</p>
-      </b-modal>
-
-      <b-modal id="save-mdl" @ok="Save" ok-title="保存" :title="question_title+'を保存'">
-        <p class="my-2">問題を保存しますか？</p>
-      </b-modal>
-
-      <b-modal id="delete-mdl" @ok="Delete" ok-title="削除" ok-variant="danger" :title="question_title+'を削除'">
-        <p class="my-2">本当に削除しますか？</p>
-      </b-modal>
-
-      <b-modal id="excel-mdl" title="Excelで編集" @hidden="isFileInput=false">
-        <div class="mb-2">
-          <p><span class="h4">①</span>ファイルを編集</p>
-          <button class="btn btn-info" @click="ExportExcel">Excelファイルをダウンロード</button>
-        </div>
-        <div>
-          <p><span class="h4">②</span>ファイルをアップロード</p>
-          <input type="file" id="file" ref="file" @change="isFileInput=true">
-        </div>
-        <template #modal-footer="{cancel}">
-          <button class="btn btn-secondary" @click="cancel()">cancel</button>
-          <button class="btn btn-primary" v-if="isFileInput" v-b-modal.excel-mdl-2>適用</button>
-        </template>
-      </b-modal>
-
-      <b-modal id="excel-mdl-2" @ok="ImportExcel" title="Excelファイルを適用">
-        <p class="my-2">元のデータを上書きしますか？</p>
-      </b-modal>
+    <b-modal id="excel-mdl-2" @ok="ImportExcel" title="Excelファイルを適用">
+      <p class="my-2">元のデータを上書きしますか？</p>
+    </b-modal>
   </div>
 </template>
 
 <script>
-import api from '../api.js'
-import draggable from 'vuedraggable'
+import api from "../api.js";
+import draggable from "vuedraggable";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import XLSX from "xlsx"
-
+import XLSX from "xlsx";
 
 export default {
   components: {
-    'draggable': draggable,
+    draggable: draggable,
   },
   data() {
     return {
-      question_title:"新規データ",
+      question_title: "新規データ",
       questions: [],
+      userID: null,
       draggingIndex: null,
       focusIndex: 0,
       message: "",
@@ -103,108 +183,121 @@ export default {
       delLineIndex: null,
       blankAlert: false,
       isFileInput: false,
-    }
+    };
   },
-  methods:{
-    setData: function(){
-      var data = api.getQuestions(this.tableID);
-      if(data.statusCode == 200){
-        this.question_title = data.body.title;
-        this.questions = data.body.info.questions;
-        return true
-      }else{
-        return false
-      }
+  methods: {
+    getData: async function () {
+      var data = await api.getQuestions(this.tableID);
+      return data;
     },
-    ClickedSaveBtn: function(){
+    setData: function (data) {
+      this.question_title = data.body.title;
+      this.questions = data.body.info.questions;
+      this.userID = data.body.userID;
+    },
+    ClickedSaveBtn: function () {
       this.deleteNull();
-      if(this.check_blank()){
+      if (this.check_blank()) {
         this.blankAlert = true;
         return;
       }
       this.$bvModal.show("save-mdl");
     },
-    ClickedUpdateBtn: function(){
+    ClickedUpdateBtn: function () {
       this.deleteNull();
-      if(this.check_blank()){
+      if (this.check_blank()) {
         this.blankAlert = true;
         return;
       }
       this.$bvModal.show("update-mdl");
     },
-    ClickedDelLine: function(i){
-      if(this.questions[i][0]==""&&this.questions[i][1]==""){
+    ClickedDelLine: function (i) {
+      if (this.questions[i][0] == "" && this.questions[i][1] == "") {
         this.DelLine(i);
-      }else{
+      } else {
         this.delLineIndex = i;
         this.$bvModal.show("del-line");
       }
     },
-    deleteNull: function (){
+    deleteNull: function () {
       //未入力の行を削除
       var i;
-      for(i=0;i<this.questions.length;i++){
+      for (i = 0; i < this.questions.length; i++) {
         var v1 = this.questions[i][0];
         var v2 = this.questions[i][1];
-        if(v1==""&&v2==""){
-          this.questions.splice(i,1);
-          i-=1;
+        if (v1 == "" && v2 == "") {
+          this.questions.splice(i, 1);
+          i -= 1;
         }
       }
       //全ての行が消えてしまったら
-      if(this.questions.length==0)this.AddLine();
+      if (this.questions.length == 0) this.AddLine();
     },
-    check_blank: function(){
+    check_blank: function () {
       //未入力のマスを検出
       var i;
-      for(i=0;i<this.questions.length;i++){
+      for (i = 0; i < this.questions.length; i++) {
         var v1 = this.questions[i][0];
         var v2 = this.questions[i][1];
-        if(v1==""||v2==""){
-          return true
+        if (v1 == "" || v2 == "") {
+          return true;
         }
       }
-      return false
+      return false;
     },
-    Save: function(){
-      var response = api.putQuestions(this.token, this.question_title, this.questions);
-      if(response.statusCode == 200){
-        this.$router.push({name:'mypage'});
+    Save: async function () {
+      var response = await api.putQuestions(
+        this.question_title,
+        this.questions
+      );
+      console.log(response);
+      if (response.statusCode == 200) {
+        this.$router.push({ name: "mypage" });
         this.$router.go(0);
       }
     },
-    Update: function(){
-      var response = api.updateQuestions(this.token, this.question_title, this.questions, this.tableID);
-      if(response.statusCode == 200){
-        this.$router.push({name:'start',params:{id:this.$route.params.id}});
+    Update: async function () {
+      var response = await api.updateQuestions(
+        this.question_title,
+        this.questions,
+        this.tableID
+      );
+      if (response.statusCode == 200) {
+        this.$router.push({
+          name: "start",
+          params: { id: this.$route.params.id },
+        });
       }
     },
-    Delete: function(){
-      var response = api.deleteQuestions(this.token,this.tableID);
-      if(response.statusCode == 200){
-        this.$router.push({name:'mypage'});
+    Delete: async function () {
+      var response = await api.deleteQuestions(this.tableID);
+      console.log(response);
+      if (response.statusCode == 200) {
+        this.$router.push({ name: "mypage" });
         this.$router.go(0);
       }
     },
-    moveFocus: function(move){
-      this.$nextTick(()=>{
-        if(this.focusIndex+move<this.questions.length*2
-        && this.focusIndex+move>=0){
-          this.focusIndex+=move;
+    moveFocus: function (move) {
+      this.$nextTick(() => {
+        if (
+          this.focusIndex + move < this.questions.length * 2 &&
+          this.focusIndex + move >= 0
+        ) {
+          this.focusIndex += move;
         }
       });
     },
-    setFocus: function(index){
+    setFocus: function (index) {
       this.focusIndex = index;
     },
-    AddLine: function(){
-      this.questions.push(["",""]);
+    AddLine: function () {
+      this.questions.push(["", ""]);
     },
-    DelLine: function(index){
-      this.questions.splice(index,1);
+    DelLine: function (index) {
+      this.questions.splice(index, 1);
     },
-    onKeyDown: function(event){
-      switch (event.key){
+    onKeyDown: function (event) {
+      switch (event.key) {
         case "ArrowRight":
           this.moveFocus(1);
           break;
@@ -213,7 +306,8 @@ export default {
           break;
         case "Enter":
         case "ArrowDown":
-          if(this.focusIndex>=(this.questions.length-1)*2)this.AddLine();
+          if (this.focusIndex >= (this.questions.length - 1) * 2)
+            this.AddLine();
           this.moveFocus(2);
           break;
         case "ArrowUp":
@@ -221,15 +315,15 @@ export default {
           break;
       }
     },
-    Find_blank: function(key,i){
-      if(this.questions[key][i]==""){
-        return {"background-color":"rgb(230, 230, 230)"};
-      }else{
-        return {"background-color":"white"};
+    Find_blank: function (key, i) {
+      if (this.questions[key][i] == "") {
+        return { "background-color": "rgb(230, 230, 230)" };
+      } else {
+        return { "background-color": "white" };
       }
     },
-    ImportExcel: function(){
-      this.$bvModal.hide('excel-mdl');
+    ImportExcel: function () {
+      this.$bvModal.hide("excel-mdl");
       let file = this.$refs.file.files[0];
 
       var reader = new FileReader();
@@ -237,7 +331,7 @@ export default {
         var data = e.target.result;
         data = new Uint8Array(data);
         var workbook = XLSX.read(data, {
-          type: "array"
+          type: "array",
         });
 
         /* DO SOMETHING WITH workbook HERE */
@@ -246,87 +340,92 @@ export default {
         var worksheet = workbook.Sheets[first_sheet_name];
         //It will prints with header and contents ex) Name, Home...
         var json = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1
+          header: 1,
         });
 
         _this.questions = [];
-        for(var i=1; i<json.length; i++){
+        for (var i = 1; i < json.length; i++) {
           json[i].length = 2;
-          if(json[i][0]==undefined)json[i][0]="";
-          if(json[i][1]==undefined)json[i][1]="";
-          _this.questions[i-1] = json[i];
+          if (json[i][0] == undefined) json[i][0] = "";
+          if (json[i][1] == undefined) json[i][1] = "";
+          _this.questions[i - 1] = json[i];
         }
-      }
+      };
       const _this = this;
 
       reader.readAsArrayBuffer(file);
     },
-    ExportExcel: function(){
+    ExportExcel: function () {
       const wb = XLSX.utils.book_new();
       var data = this.questions.concat();
-      data.unshift(['【問題】','【答え】']);
+      data.unshift(["【問題】", "【答え】"]);
       var ws = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb,ws);
-      XLSX.writeFile(wb,this.question_title+'.xlsx')
+      XLSX.utils.book_append_sheet(wb, ws);
+      XLSX.writeFile(wb, this.question_title + ".xlsx");
     },
   },
-  mounted: function(){
+  mounted: async function () {
     document.addEventListener("keydown", this.onKeyDown);
 
-    //cookieから変数を読み込む
-    this.token  = this.$cookies.get('LoginToken');
     this.tableID = this.$route.params.id;
-    
+
     //tableIDの有無により新規作成か編集か判別
-    if(this.setData()){
+    const data = await this.getData();
+    const tableIdIsExist = data.statusCode == 200;
+    if (tableIdIsExist) {
       this.mode = "update";
-    }else{
-      this.mode = "new"
+      this.setData(data);
+    } else {
+      this.mode = "new";
       this.AddLine();
     }
-
-    
   },
   watch: {
-    focusIndex: function(){
+    focusIndex: function () {
       this.$refs.input[this.focusIndex].select();
     },
-    questions: function(){
-      if(this.check_blank()==false)this.blankAlert=false;
-    }
-  }
-}
+    questions: function () {
+      if (this.check_blank() == false) this.blankAlert = false;
+    },
+  },
+  computed: {
+    email() {
+      return this.$store.state.user.attributes.email;
+    },
+  },
+};
 </script>
 
 <style>
-.flex-col{
-  display:flex; 
+.flex-col {
+  display: flex;
   flex-direction: column;
 }
-.scroll{
+.scroll {
   overflow-y: scroll;
   max-height: 24rem;
 }
-.table input:focus{
-  border-color:skyblue !important;
-  background-color:white !important;
+.table input:focus {
+  border-color: skyblue !important;
+  background-color: white !important;
   outline: 0 none;
 }
-.table input,.table i{
+.table input,
+.table i {
   width: 100%;
   height: 100%;
   border: solid;
   border-color: white;
-  background-color:transparent
+  background-color: transparent;
 }
-.edit-table td{
+.edit-table td {
   padding: 0 !important;
   height: 0rem;
 }
-.table tr{
+.table tr {
   line-height: 1rem;
 }
-.ghost{
+.ghost {
   opacity: 60%;
 }
 </style>

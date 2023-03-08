@@ -1,61 +1,79 @@
 <template>
-  <div class="container text-center" style="padding: 16rem 0rem;">
+  <div class="container text-center" style="padding: 15.5rem 0rem;">
     <div class="card mx-auto shadow input-form">
       <div class="card-body">
         <h5 class="card-title">ログイン</h5>
         <div class="text-left">
-          <label for="user-id">ユーザー名</label>
+          <label for="user-id">メールアドレス</label>
           <input type="text" class="form-control" id="user-id" v-model="input_userID">
           <label for="pass">パスワード</label>
           <input type="password" class="form-control" id="pass" v-model="input_pass">
         </div>
+        <router-link to="/forgot" class="text-secondary">パスワードを忘れましたか？</router-link>
         <div v-for="(msg,key) in msg_list" class="text-danger" :key="key">{{msg}}</div>
         <button @click="Clicked_login" class="btn btn-primary btn-block" :disabled="isLoading">
           <div v-show="isLoading">Loading...</div>
           <div v-show="!isLoading">ログイン</div>
         </button>
         <div>or</div>
-        <router-link to="/signup"  class="text-primary">サインアップ</router-link>
+        <router-link to="/signup"  class="text-primary">アカウント作成</router-link>
       </div>
       
     </div>
   </div>
 </template>
-
 <script>
-import api from '../api.js'
+import { Auth } from 'aws-amplify'
+
 export default {
-  data() {
+  data(){
     return {
       input_userID:"",
       input_pass:"",
-      token:"",
       msg_list: [],
-      isLoading: false
+      isLoading: false,
+      formFields: [
+        {
+          type: "name",
+          label: "ユーザー名",
+          placeholder: "ユーザー名を入力"
+        },
+        {
+          type: "email",
+          label: "メールアドレス",
+          placeholder: "メールアドレスを入力"
+        },
+        {
+          type: "password",
+          label:"パスワード",
+          placeholder: "パスワードを入力",
+          inputProps: {required: true, autocomplete: "new-password"}
+        }
+      ]
     }
   },
-  methods: {
+  methods:{
     Clicked_login: function(){
       this.msg_list = [];
-      if (this.input_userID=="")this.msg_list.push("ユーザーIDを入力してください");
+      if (this.input_userID=="")this.msg_list.push("メールアドレスを入力してください");
       if (this.input_pass=="")this.msg_list.push("パスワードを入力してください");
       if (this.input_userID!="" && this.input_pass!=""){
         this.login();
       }
-
     },
-    login: function(){
-      this.isLoading;
-      var response = api.login(this.input_userID,this.input_pass);
-      if(response.statusCode == 200){
-        this.$cookies.set('LoginToken',response.Item.token);
-        this.$parent.Login();
-        this.$router.push({name:'mypage'});
-      }else{
+    login: async function(){
+      this.isLoading = true;
+      try {
+        await Auth.signIn(this.input_userID,this.input_pass);
+        this.$router.push({name: "home"});//homeへ移動
+      } catch (error) {
         this.msg_list.push("パスワードまたはユーザー名が違います");
       }
       this.isLoading = false;
     }
-  }
+  },
+  mounted: function() {
+    if(this.$route.query.email)this.input_userID = this.$route.query.email;
+  },
 }
 </script>
