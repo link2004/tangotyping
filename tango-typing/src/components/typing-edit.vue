@@ -73,9 +73,7 @@
       </button>
     </div>
 
-    <b-alert class="mb-3" variant="danger" :show="blankAlert"
-      >空白を含む行があります</b-alert
-    >
+    <b-alert class="mb-3" variant="danger" :show="blankAlert">空白を含む行があります</b-alert>
     <div class="bottom-btn">
       <button
         class="btn btn-primary btn-block"
@@ -245,15 +243,21 @@ export default {
       }
       return false;
     },
+    CloseModal(){
+      const url = this.$route.fullPath.split("/m/")[0];
+      this.$router.push(url).then(()=>{
+        this.$router.go(0);
+      })
+    },
     Save: async function () {
       var response = await api.putQuestions(
         this.question_title,
         this.questions
       );
-      console.log(response);
       if (response.statusCode == 200) {
-        this.$router.push({ name: "mypage" });
-        this.$router.go(0);
+        this.CloseModal();
+      }else{
+        alert(response.msg);
       }
     },
     Update: async function () {
@@ -263,19 +267,22 @@ export default {
         this.tableID
       );
       if (response.statusCode == 200) {
-        this.$router.push({
-          name: "start",
-          params: { id: this.$route.params.id },
-        });
+        this.CloseModal();
+      }else{
+        alert(response.msg);
       }
     },
     Delete: async function () {
       var response = await api.deleteQuestions(this.tableID);
-      console.log(response);
       if (response.statusCode == 200) {
-        this.$router.push({ name: "mypage" });
-        this.$router.go(0);
+        this.CloseModal();
+      }else{
+        alert(response.msg);
       }
+    },
+    errormsg(text) {
+      const errorview = document.getElementById("errorview");
+      errorview.textContent = text;
     },
     moveFocus: function (move) {
       this.$nextTick(() => {
@@ -365,8 +372,6 @@ export default {
     },
   },
   mounted: async function () {
-    document.addEventListener("keydown", this.onKeyDown);
-
     this.tableID = this.$route.params.id;
 
     //tableIDの有無により新規作成か編集か判別
@@ -393,6 +398,12 @@ export default {
       return this.$store.state.user.attributes.email;
     },
   },
+  created() {
+    window.addEventListener('keydown', this.onKeyDown);
+  },
+  destroyed() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
 };
 </script>
 

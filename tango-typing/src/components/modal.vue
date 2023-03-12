@@ -67,4 +67,7 @@ export default {
 .modal-footer{
   justify-content: flex-start;
 }
+.br-1 { 
+  border-radius: 1rem;
+}
 </style>

@@ -1,22 +1,16 @@
 <template>
 <div class="text-center py-5">
   <div>
-
-    <div @click="CreateNew" class="btn-primary new-btn mb-3" style="font-size:1.3rem">新規作成</div>
-    <div class="card shadow-sm mb-2">
-      <div class="card-header p-2 bg-info text-white" style="font-size:1.3rem">マイ単語帳</div>
-      <div class="card-body list-body" style="font-size:1.4rem;font-weight:bold; height:40rem;">
+    <h1 class="border-bottom mb-4">マイ単語帳</h1>
+    <div @click="CreateNew" class="btn btn-outline-primary btn-block block-element mx-auto mb-5">単語帳を作成</div>
+      <div style="min-height:40rem;">
         <h3 v-if="isLoading">読み込み中...</h3>
-        <div class="px-4">
           <div
-          class="card mb-2 shadow-sm bg-light"
           v-for="(question,key) in this.questions"
           :key=key
           @click="ClickedQuestion(question)">
-            <div class="card-body p-2">{{question.title}}</div>
+            <div class="btn btn-info btn-block block-element mx-auto mb-3">{{question.title}}</div>
           </div>
-        </div>
-      </div>
     </div>
     <router-view></router-view>
   </div>
@@ -61,6 +55,7 @@ export default {
     }
   },
   mounted: async function() {
+    // console.log(await Auth.currentAuthenticatedUser())
     this.isLoading = true;
     this.questions = await this.queryQuestions();
     this.isLoading = false;
@@ -68,23 +63,12 @@ export default {
 }
 </script>
 
-<style>
-#typing-modal{
-  text-align: center;
-}
-.list-body{
-  max-height:40rem;
-  overflow-y: scroll;
-}
-
-.new-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.3rem;
-}
-.question-link{
-  margin:auto;
-}
-.td{
-  display: flex;
+<style scoped>
+.block-element {
+  font-size: 2rem;
+  width: 20rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 100%;
 }
 </style>

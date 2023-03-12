@@ -24,7 +24,7 @@
       </div>
     </b-container>
     <div class="text-left border-top pt-2">
-      <div id="popover-copied" class="btn btn-info" @click="copyToClipboard"><i class="mr-1 bi bi-link-45deg"/>共有</div>
+      <div id="popover-copied" class="btn btn-info" @click="copyUrl"><i class="mr-1 bi bi-link-45deg"/>共有</div>
       <b-popover target="popover-copied" placement="top">リンクをコピーしました！</b-popover>
       
     </div>
@@ -37,20 +37,17 @@ export default {
     onKeyDown:function(e){
       if(e.key == "Enter" && this.$route.name=='start')this.$router.push({name:'typing',params:{id:this.$route.params.id}});
     },
-    copyToClipboard() {
+    copyUrl() {
         var text = location.host + "/m/typing/" + this.$route.params.id;
-        navigator.clipboard.writeText(text)
-        .then(() => {
-            console.log("copied!")
-        })
-        .catch(e => {
-            console.error(e)
-        })
-    }
+        navigator.clipboard.writeText(text);
+    },
   },
-  mounted() {
-    document.addEventListener("keydown", this.onKeyDown);
+  created() {
+    window.addEventListener('keydown', this.onKeyDown);
   },
+  destroyed() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
 }
 </script>
 <style>

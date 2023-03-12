@@ -71,9 +71,10 @@ async function deleteQuestions(tableID) {
   const token = user.signInUserSession.idToken.jwtToken;
   const myInit = {
     headers: {
-      Authorization: token
+      Authorization: token,
     },
     body: {
+      "idtoken":token,
       "userID" : user.attributes.email,
       "tableID": tableID
     }
@@ -99,7 +100,7 @@ async function updateQuestions(title, data, tableID) {
   const token = user.signInUserSession.idToken.jwtToken;
   const myInit = {
     headers: {
-      Authorization: token
+      Authorization: token,
     },
     body: {
       "userID" : user.attributes.email,
