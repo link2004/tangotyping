@@ -73,9 +73,7 @@
       </button>
     </div>
 
-    <b-alert class="mb-3" variant="danger" :show="blankAlert"
-      >空白を含む行があります</b-alert
-    >
+    <b-alert class="mb-3" variant="danger" :show="blankAlert">空白を含む行があります</b-alert>
     <div class="bottom-btn">
       <button
         class="btn btn-primary btn-block"
@@ -258,6 +256,8 @@ export default {
       );
       if (response.statusCode == 200) {
         this.CloseModal();
+      }else{
+        alert(response.msg);
       }
     },
     Update: async function () {
@@ -268,13 +268,21 @@ export default {
       );
       if (response.statusCode == 200) {
         this.CloseModal();
+      }else{
+        alert(response.msg);
       }
     },
     Delete: async function () {
       var response = await api.deleteQuestions(this.tableID);
       if (response.statusCode == 200) {
         this.CloseModal();
+      }else{
+        alert(response.msg);
       }
+    },
+    errormsg(text) {
+      const errorview = document.getElementById("errorview");
+      errorview.textContent = text;
     },
     moveFocus: function (move) {
       this.$nextTick(() => {
