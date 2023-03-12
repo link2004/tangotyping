@@ -3,7 +3,7 @@
   <div>
     <h1 class="border-bottom mb-4">マイ単語帳</h1>
     <div @click="CreateNew" class="btn btn-outline-primary btn-block block-element mx-auto mb-5">単語帳を作成</div>
-      <div style="height:40rem;">
+      <div style="min-height:40rem;">
         <h3 v-if="isLoading">読み込み中...</h3>
           <div
           v-for="(question,key) in this.questions"
