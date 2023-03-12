@@ -250,7 +250,6 @@ export default {
         this.question_title,
         this.questions
       );
-      console.log(response);
       if (response.statusCode == 200) {
         this.$router.push({ name: "mypage" });
         this.$router.go(0);
@@ -271,7 +270,6 @@ export default {
     },
     Delete: async function () {
       var response = await api.deleteQuestions(this.tableID);
-      console.log(response);
       if (response.statusCode == 200) {
         this.$router.push({ name: "mypage" });
         this.$router.go(0);
@@ -365,8 +363,6 @@ export default {
     },
   },
   mounted: async function () {
-    document.addEventListener("keydown", this.onKeyDown);
-
     this.tableID = this.$route.params.id;
 
     //tableIDの有無により新規作成か編集か判別
@@ -393,6 +389,12 @@ export default {
       return this.$store.state.user.attributes.email;
     },
   },
+  created() {
+    window.addEventListener('keydown', this.onKeyDown);
+  },
+  destroyed() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
 };
 </script>
 
