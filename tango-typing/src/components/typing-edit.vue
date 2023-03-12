@@ -245,14 +245,19 @@ export default {
       }
       return false;
     },
+    CloseModal(){
+      const url = this.$route.fullPath.split("/m/")[0];
+      this.$router.push(url).then(()=>{
+        this.$router.go(0);
+      })
+    },
     Save: async function () {
       var response = await api.putQuestions(
         this.question_title,
         this.questions
       );
       if (response.statusCode == 200) {
-        this.$router.push({ name: "mypage" });
-        this.$router.go(0);
+        this.CloseModal();
       }
     },
     Update: async function () {
@@ -262,17 +267,13 @@ export default {
         this.tableID
       );
       if (response.statusCode == 200) {
-        this.$router.push({
-          name: "start",
-          params: { id: this.$route.params.id },
-        });
+        this.CloseModal();
       }
     },
     Delete: async function () {
       var response = await api.deleteQuestions(this.tableID);
       if (response.statusCode == 200) {
-        this.$router.push({ name: "mypage" });
-        this.$router.go(0);
+        this.CloseModal();
       }
     },
     moveFocus: function (move) {
