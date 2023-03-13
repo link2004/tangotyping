@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/mypage', name:"mypage",
-    meta: { requireAuth: true, title:"マイページ" },
+    meta: { requireAuth: true, title:"マイ単語帳" },
     component: () => import('../views/Mypage.vue'),
     children:[
       {
