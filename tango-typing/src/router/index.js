@@ -4,11 +4,12 @@ import store from "@/store/index.js"
 import Auth from "@aws-amplify/auth"
 
 Vue.use(VueRouter)
-
+const DEFAULT_TITLE = 'TangoTyping'
 const routes = [
   {
     path:'/', name:"home",
     component: () => import('../views/Home.vue'),
+    meta: {title:"ホーム"},
     children:[
       {
         path:'m',
@@ -31,7 +32,7 @@ const routes = [
   },
   {
     path: '/mypage', name:"mypage",
-    meta: { requireAuth: true },
+    meta: { requireAuth: true, title:"マイページ" },
     component: () => import('../views/Mypage.vue'),
     children:[
       {
@@ -59,29 +60,32 @@ const routes = [
     ]
   },
   { 
-    path: '/login', name:"login", component: () => import('../views/Login.vue'), 
+    path: '/login', name:"login", component: () => import('../views/Login.vue'), meta: {title:"ログイン"},
   },
   {
-    path: '/signup', component: () => import('../views/Signup.vue'),
+    path: '/signup', component: () => import('../views/Signup.vue'),meta: {title:"サインアップ"},
   },
   {
-    path: '/confirm', name:"confirm", component: () => import('../views/Confirm.vue'),
+    path: '/confirm', name:"confirm", component: () => import('../views/Confirm.vue'),meta: {title:"認証コード確認"},
   },
   {
-    path: '/reset', name:"reset", component: () => import('../views/reset.vue'),
+    path: '/reset', name:"reset", component: () => import('../views/reset.vue'),meta: {title:"パスワードリセット"},
   },
   {
-    path: '/forgot', name:"forgot", component: () => import('../views/forgot.vue'),
+    path: '/forgot', name:"forgot", component: () => import('../views/forgot.vue'),meta: {title:"パスワードを忘れた"},
   },
   {
     path: '/policy',
     name: 'policy',
-    component: () => import('../views/policy.vue')
+    component: () => import('../views/policy.vue'),
+    meta: {title:"プライバシーポリシー"},
   },
   {
     path: '/terms',
     name: 'terms',
-    component: () => import('../views/terms.vue')
+    component: () => import('../views/terms.vue'),
+    meta: {title:"利用規約"},
+
   },
 ]
 
@@ -130,6 +134,10 @@ router.beforeResolve(async (to, from, next) => {
   return next();
 });
 
+router.afterEach((to)=>{
+  const title = to.meta.title ? to.meta.title + " | "+ DEFAULT_TITLE : DEFAULT_TITLE
+  document.title = title
+})
 // onAuthUIStateChange((authState, authData) => {
 //   //サインインしたら
 //   if (authState === AuthState.SignedIn && authData) {
