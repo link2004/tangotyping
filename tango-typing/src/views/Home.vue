@@ -1,8 +1,8 @@
 <template>
   <div class="text-left">
     <div class="py-5 text-center">
-      <strong style="font-size: 9vw">TangoTyping</strong>
-      <h2>単語帳タイピング</h2>
+      <strong style="font-size: 6vw;">単語タイピング</strong>
+      <h1>TangoTyping</h1>
     </div>
 
     <div

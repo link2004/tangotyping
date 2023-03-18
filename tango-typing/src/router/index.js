@@ -4,7 +4,7 @@ import store from "@/store/index.js"
 import Auth from "@aws-amplify/auth"
 
 Vue.use(VueRouter)
-const DEFAULT_TITLE = 'TangoTyping'
+const DEFAULT_TITLE = '単語タイピング'
 const routes = [
   {
     path:'/', name:"home",
