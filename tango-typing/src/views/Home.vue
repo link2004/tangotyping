@@ -1,8 +1,9 @@
 <template>
   <div class="text-left">
     <div class="py-5 text-center">
-      <strong style="font-size: 6vw;">単語タイピング</strong>
-      <h1>TangoTyping</h1>
+      <strong style="font-size: 7rem;" class="slideup-text">単語タイピング</strong>
+      <h1><span id="sub-title">英</span></h1>
+      <p class="mt-4 text-black-50">英単語帳とタッチタイピングを組み合わせた無料のタイピングゲームです。</p>
     </div>
 
     <div
@@ -12,6 +13,7 @@
     >
       マイ単語帳一覧
     </div>
+    
     <div
       class="btn btn-outline-primary btn-block block-element mx-auto mb-5 shadow"
       style="width: 100%"
@@ -30,7 +32,8 @@
       </div>
     </div> -->
     <div v-if="user" style="padding-bottom: 3rem">
-      <h2 class="text-left border-bottom mb-4">マイ単語帳</h2>
+      <h2 class="text-left">マイ単語帳</h2>
+      <p class="border-bottom mb-4 text-black-50">自分で作った単語帳で、タイピングしながら英語を暗記しよう！</p>
       <h3 v-if="isLoading">読み込み中...</h3>
       <div style="display: flex; flex-wrap: wrap">
         <div
@@ -42,11 +45,17 @@
         >
           {{ question.title }}
         </div>
+        <div v-if="questions.length==0">
+          <div class="btn btn-outline-info btn-block block-element" style="margin: 10px" @click="CreateNew">
+            単語帳を作成
+          </div>
+        </div>
       </div>
     </div>
 
     <div style="padding-bottom: 10rem">
-      <h2 class="text-left border-bottom mb-4">サンプル</h2>
+      <h2 class="text-left">サンプル</h2>
+      <p class="border-bottom mb-4 text-black-50">英検やTOEICで使用される勉強におすすめの単語が多数収録！</p>
       <div
         class="btn btn-info btn-block block-element"
         @click="ClickedQuestion('10e36549-3657-46a0-b3be-776375e91044')"
@@ -96,6 +105,17 @@ export default {
       }
       return questions;
     },
+    loadAnimation(){
+      let text = "単語帳 × タイピング";
+      let i = 0;
+      let intervalId = setInterval(function() {
+        document.getElementById("sub-title").textContent += text[i];
+        i++;
+        if (i >= text.length) {
+          clearInterval(intervalId);
+        }
+      }, 50); // 表示する間隔をミリ秒単位で指定します
+    }
   },
   computed: {
     user() {
@@ -106,6 +126,7 @@ export default {
     this.isLoading = true;
     this.questions = await this.queryQuestions();
     this.isLoading = false;
+    this.loadAnimation();
   },
 };
 </script>
@@ -115,5 +136,24 @@ export default {
   width: 20rem;
   border-radius: 1rem;
   padding: 2rem;
+}
+
+.slideup-text {
+  animation-name: slideUp;
+  animation-duration: 1s; /* アニメーションの時間を指定します */
+  animation-delay: 0s; /* アニメーションを開始する遅延時間を指定します */
+  animation-timing-function: ease; /* アニメーションの速度曲線を指定します */
+  animation-fill-mode: forwards; /* アニメーション終了時に要素のスタイルを維持するように指定します */
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%); /* 開始時の位置を指定します */
+    opacity: 0; /* 開始時の透明度を指定します */
+  }
+  to {
+    transform: translateY(0); /* 終了時の位置を指定します */
+    opacity: 1; /* 終了時の透明度を指定します */
+  }
 }
 </style>
