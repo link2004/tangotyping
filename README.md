@@ -1,4 +1,4 @@
-制作物URL:https://www.tangotyping.com/
+サイトURL:https://www.tangotyping.com/
 
 ゲストユーザーログインID： riku2004+2@gmail.com
 パスワード：guest0001
