@@ -1,3 +1,5 @@
+プロフィール紹介用に一時的に公開しています。
+
 サイトURL:https://www.tangotyping.com/
 
 ゲストユーザーログインID： riku2004+2@gmail.com
